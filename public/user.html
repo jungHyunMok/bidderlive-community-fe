@@ -1,0 +1,3997 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>비더라이브 커뮤니티 MVP v9</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      --bg: #05070d;
+      --bg-soft: #0b1020;
+      --card: #111827;
+      --card-soft: #1f2937;
+      --border: #1f2933;
+      --accent: #ff3b69;
+      --accent-soft: rgba(255, 59, 105, 0.12);
+      --accent-strong: #ff4f7a;
+      --text-main: #f9fafb;
+      --text-sub: #9ca3af;
+      --chip-bg: #111827;
+      --chip-active: #f9fafb;
+      --chip-active-bg: #ff3b69;
+      --radius-lg: 16px;
+      --radius-md: 999px;
+      --shadow-soft: 0 18px 35px rgba(0, 0, 0, 0.65);
+      --glass-bg: rgba(15, 23, 42, 0.6);
+      --glass-border: rgba(148, 163, 184, 0.2);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .animate-slide-up {
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    .animate-scale-in {
+      animation: scaleIn 0.5s ease-out forwards;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #020308 55%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .hidden-by-category {
+      display: none !important;
+    }
+
+    .hidden-by-search {
+      display: none !important;
+    }
+
+    .hidden-by-type {
+      display: none !important;
+    }
+
+    .hidden-by-block {
+      display: none !important;
+    }
+
+    /* 로그인 페이지 */
+
+    #login-page.page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: radial-gradient(circle at top left, #1f2937, #020308 65%);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 32px 28px 28px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .auth-card h1 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      letter-spacing: 0.04em;
+    }
+
+    .auth-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      margin-bottom: 10px;
+    }
+
+    .auth-card .subtitle {
+      margin: 4px 0 24px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: var(--text-sub);
+    }
+
+    label span.label-text {
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"],
+    input[type="file"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #6b7280;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(255, 59, 105, 0.4);
+    }
+
+    fieldset {
+      border: none;
+      padding: 0;
+      margin: 0 0 14px;
+    }
+
+    fieldset legend {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .role-row {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .role-row label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      background: rgba(15, 23, 42, 0.8);
+      cursor: pointer;
+      margin: 0;
+      color: var(--text-sub);
+    }
+
+    .role-row input[type="radio"] {
+      accent-color: var(--accent);
+    }
+
+    .helper-text {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 4px;
+      margin-bottom: 14px;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .text-btn,
+    .icon-btn {
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 16px;
+      font-weight: 500;
+      transition: all 0.18s ease;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #0b0b10;
+      box-shadow: 0 12px 25px rgba(255, 59, 105, 0.35);
+    }
+
+    .primary-btn.full-width {
+      width: 100%;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(255, 59, 105, 0.45);
+    }
+
+    .secondary-btn {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding-inline: 14px;
+      font-size: 13px;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(31, 41, 55, 0.95);
+    }
+
+    .text-btn {
+      background: transparent;
+      color: var(--text-sub);
+      padding-inline: 0;
+    }
+
+    .text-btn:hover {
+      color: var(--accent-strong);
+    }
+
+    .icon-btn {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      font-size: 12px;
+      padding: 4px 9px;
+      color: var(--text-sub);
+    }
+
+    .icon-btn:hover {
+      border-color: rgba(148, 163, 184, 0.9);
+      color: var(--text-main);
+    }
+
+    .auth-footer {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    /* 앱 레이아웃 */
+
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 18px;
+      backdrop-filter: blur(20px);
+      background: linear-gradient(to right, rgba(3, 7, 18, 0.85), rgba(15, 23, 42, 0.8));
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .logo-and-nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 8px 13px;
+      background: transparent;
+      color: rgba(209, 213, 219, 0.9);
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link.active {
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--chip-active);
+      border-color: rgba(148, 163, 184, 0.9);
+    }
+
+    .nav-link:hover:not(.active) {
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .search-bar {
+      flex: 1;
+      max-width: 360px;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-bar input {
+      width: 100%;
+      font-size: 13px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-main);
+    }
+
+    .search-bar input::placeholder {
+      color: #6b7280;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(255, 59, 105, 0.4);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .nickname-label {
+      font-size: 13px;
+    }
+
+    .role-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    main {
+      max-width: 1080px;
+      width: 100%;
+      margin: 14px auto 40px;
+      padding-inline: 16px;
+      flex: 1;
+    }
+
+    .page-section {
+      margin-top: 10px;
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .section-subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .category-filter {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      padding: 6px 11px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: var(--chip-bg);
+      color: var(--text-sub);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip.active {
+      background: var(--chip-active-bg);
+      color: #111827;
+      border-color: transparent;
+    }
+
+    .chip.active::before {
+      content: "●";
+      font-size: 8px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .post-card {
+      background: radial-gradient(circle at top left, #111827, #020308 70%);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid rgba(30, 64, 175, 0.55);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      min-height: 260px;
+      position: relative;
+      animation: slideUp 0.6s ease-out backwards;
+    }
+
+    .post-image {
+      height: 180px;
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      background-color: #020617;
+    }
+
+    .post-body {
+      padding: 12px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .category-pill {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: rgba(209, 213, 219, 0.9);
+    }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-hit {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      border: 1px solid rgba(248, 113, 133, 0.7);
+    }
+
+    .post-title {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .post-desc {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .post-footer {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .user-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, #4b5563, #020617 75%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .user-inline .nickname {
+      font-size: 13px;
+    }
+
+    .user-inline .sub {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .social-inline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .like-btn[data-liked="true"] {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      border-color: rgba(248, 113, 133, 0.8);
+    }
+
+    .like-btn .like-icon {
+      font-size: 14px;
+    }
+
+    .like-btn .like-count {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .owner-tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: 11px;
+    }
+
+    .owner-pill {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.7);
+      color: #6ee7b7;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .owner-tools .text-btn {
+      font-size: 11px;
+      padding: 0 4px;
+    }
+
+    .small-helper {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    /* 홈(메인) 섹션 */
+
+    .home-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .home-hero-card {
+      background: radial-gradient(circle at top left, #111827, #020308 70%);
+      border-radius: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .home-hero-title {
+      font-size: 22px;
+      margin: 0 0 6px;
+    }
+
+    .home-hero-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin: 0 0 12px;
+    }
+
+    .home-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .home-badge {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-sub);
+    }
+
+    .home-pill-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      cursor: pointer;
+      margin-right: 6px;
+      margin-top: 4px;
+    }
+
+    .home-pill-link span.icon {
+      font-size: 13px;
+    }
+
+    .home-hero-highlight {
+      border-radius: 14px;
+      padding: 8px 10px;
+      margin-top: 8px;
+      border: 1px dashed rgba(248, 250, 252, 0.25);
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .home-hero-mini-title {
+      font-size: 13px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .home-hero-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .home-hero-item span.label {
+      color: var(--text-sub);
+    }
+
+    .home-hero-item span.value {
+      font-weight: 500;
+    }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.5fr) minmax(0, 2fr);
+      gap: 18px;
+    }
+
+    .tile {
+      background: radial-gradient(circle at top left, #020617, #020308 75%);
+      border-radius: 18px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 14px 14px 12px;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .tile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .tile-title {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .tile-sub {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin: 2px 0 0;
+    }
+
+    .tile-link {
+      font-size: 11px;
+      color: var(--accent-strong);
+      cursor: pointer;
+    }
+
+    .notice-list,
+    .rule-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 12px;
+    }
+
+    .notice-item {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .notice-item:last-child {
+      border-bottom: none;
+    }
+
+    .notice-title {
+      font-weight: 500;
+    }
+
+    .notice-meta {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .rule-item {
+      padding: 4px 0;
+      display: flex;
+      gap: 6px;
+    }
+
+    .rule-index {
+      font-size: 11px;
+      color: var(--accent-strong);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .rule-text {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .ad-card {
+      border-radius: 14px;
+      padding: 10px 11px;
+      background: linear-gradient(135deg, rgba(248, 250, 252, 0.04), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      font-size: 12px;
+    }
+
+    .ad-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      margin-bottom: 4px;
+    }
+
+    .ad-title {
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .ad-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    /* 메인 썸네일 광고 스트립 */
+
+    .home-thumb-ads {
+      margin-top: 18px;
+    }
+
+    .thumb-ad-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .thumb-ad-card {
+      flex: 0 0 180px;
+      border-radius: 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at top left, #020617, #020308 80%);
+      padding: 8px 8px 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.55);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .thumb-ad-thumb {
+      width: 100%;
+      height: 100px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      background-color: #020617;
+      margin-bottom: 6px;
+    }
+
+    .thumb-ad-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .thumb-ad-label {
+      font-size: 10px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .thumb-ad-title {
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 상세 화면 */
+
+    #detail-section .detail-wrapper {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      gap: 20px;
+    }
+
+    .detail-card {
+      background: radial-gradient(circle at top left, #111827, #020308 65%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(30, 64, 175, 0.6);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+    }
+
+    .detail-image {
+      height: 260px;
+      background-size: cover;
+      background-position: center;
+      background-color: #020617;
+    }
+
+    .detail-content {
+      padding: 14px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .detail-title {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .detail-desc {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .detail-body {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-main);
+      white-space: pre-line;
+    }
+
+    .detail-actions {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .comments-section {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 12px 14px;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.55);
+    }
+
+    .comments-section h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .comment-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px;
+      max-height: 240px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .comment-item {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .comment-item:last-child {
+      border-bottom: none;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    .comment-header .nickname {
+      font-weight: 500;
+    }
+
+    .comment-header .date {
+      color: var(--text-sub);
+      font-size: 11px;
+    }
+
+    .comment-body {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .comment-empty {
+      font-size: 12px;
+      color: var(--text-sub);
+      padding: 4px 0;
+    }
+
+    .comment-form textarea {
+      resize: vertical;
+      min-height: 54px;
+      margin-bottom: 6px;
+      width: 100%;
+    }
+
+    .comment-form .primary-btn {
+      width: auto;
+      padding-inline: 14px;
+      font-size: 13px;
+    }
+
+    /* 폼 카드 */
+
+    .form-card {
+      background: radial-gradient(circle at top left, #020617, #020308 70%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 14px 14px 16px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 620px;
+    }
+
+    .form-card label {
+      margin-bottom: 4px;
+    }
+
+    .form-card textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .form-card .primary-btn {
+      align-self: flex-end;
+      margin-top: 4px;
+    }
+
+    .tab-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .empty-text {
+      font-size: 13px;
+      color: var(--text-sub);
+      padding: 12px 8px;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px dashed rgba(55, 65, 81, 0.9);
+    }
+
+    #my-posts,
+    #liked-posts {
+      margin-top: 8px;
+    }
+
+    .id-search-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .id-search-row select,
+    .id-search-row input {
+      max-width: 200px;
+      flex: 1 1 140px;
+    }
+
+    .id-search-row button {
+      flex-shrink: 0;
+    }
+
+    /* 피드: 정렬 & 고정 공지 */
+
+    .feed-controls-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .feed-sort-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .feed-sort-row label {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .feed-sort-row select {
+      min-width: 140px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      font-size: 12px;
+    }
+
+    .feed-sort-row select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(255, 59, 105, 0.4);
+    }
+
+    .feed-pinned-notice {
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(191, 219, 254, 0.4);
+      background: linear-gradient(135deg, rgba(30, 64, 175, 0.55), rgba(15, 23, 42, 0.98));
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.7);
+      position: sticky;
+      top: 60px;
+      z-index: 5;
+    }
+
+    .feed-pinned-label {
+      font-size: 11px;
+      color: rgba(219, 234, 254, 0.9);
+      margin-bottom: 4px;
+    }
+
+    .feed-pinned-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .feed-pinned-body {
+      font-size: 12px;
+      color: rgba(226, 232, 240, 0.9);
+      margin: 0 0 6px;
+    }
+
+    /* 홈: TOP 자랑 & 개인화 추천 */
+
+    .home-top-brag-section,
+    .home-reco-section {
+      margin-top: 18px;
+    }
+
+    .top-brag-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .top-brag-card {
+      border-radius: 14px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: radial-gradient(circle at top left, #020617, #020308 80%);
+      padding: 8px 9px 10px;
+      display: flex;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .top-brag-card:hover {
+      border-color: rgba(96, 165, 250, 0.9);
+      transform: translateY(-1px);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .top-brag-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      background-color: #020617;
+      flex-shrink: 0;
+    }
+
+    .top-brag-body {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .top-brag-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .top-brag-category {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .rank-badge {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      z-index: 2;
+      border: 2px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .rank-1 {
+      background: linear-gradient(135deg, #ffd700, #b8860b);
+    }
+
+    .rank-2 {
+      background: linear-gradient(135deg, #c0c0c0, #7f8c8d);
+    }
+
+    .rank-3 {
+      background: linear-gradient(135deg, #cd7f32, #a0522d);
+    }
+
+    .top-brag-likes {
+      font-size: 11px;
+    }
+
+    .top-brag-title {
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-brag-author {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    /* 프로필 페이지 */
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.2fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .profile-card {
+      background: radial-gradient(circle at top left, #111827, #020308 70%);
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 14px 16px 14px;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 14px;
+    }
+
+    .profile-header-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .profile-avatar {
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+    }
+
+    .profile-nickname-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .profile-nickname-row h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .profile-role-pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-sub);
+    }
+
+    .profile-operator-badge {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.8);
+      color: #facc15;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .profile-bio {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .profile-meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-end;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .profile-meta-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .profile-category-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .profile-category-chips .chip {
+      font-size: 11px;
+      padding: 4px 9px;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .profile-actions .secondary-btn {
+      font-size: 12px;
+      padding-inline: 12px;
+    }
+
+    .profile-side {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .profile-dealer-body {
+      font-size: 13px;
+      color: var(--text-sub);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-dealer-rating {
+      font-size: 14px;
+      font-weight: 500;
+      color: #fde68a;
+    }
+
+    .profile-dealer-meta {
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .profile-dealer-card .home-pill-link {
+      margin-top: 4px;
+      align-self: flex-start;
+    }
+
+    .profile-link {
+      cursor: pointer;
+    }
+
+    /* NEW: Enhanced Profile Styles */
+    .profile-cover {
+      height: 180px;
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      border-radius: 20px 20px 0 0;
+      position: relative;
+      margin-bottom: -40px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent, rgba(2, 6, 23, 0.9));
+    }
+
+    .profile-card.enhanced {
+      padding: 0;
+      overflow: hidden;
+      background: #020617;
+      border: 1px solid var(--glass-border);
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    .profile-content-wrapper {
+      padding: 0 24px 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .profile-avatar-large {
+      width: 80px;
+      height: 80px;
+      font-size: 28px;
+      border: 4px solid #020617;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      background: radial-gradient(circle at top left, #374151, #111827);
+    }
+
+    .profile-header-enhanced {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 16px;
+    }
+
+    .profile-names {
+      margin-top: 12px;
+    }
+
+    .profile-names h3 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 4px;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .profile-stats-row {
+      display: flex;
+      gap: 24px;
+      margin: 16px 0;
+      padding: 16px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .profile-badges {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .profile-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* 신고 모달 */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 360px;
+      background: radial-gradient(circle at top left, #111827, #020308 70%);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 16px 16px 14px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .modal h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+
+    .modal p {
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .modal-options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .modal-options label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .modal-options input[type="radio"] {
+      accent-color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .modal-target {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    /* 반응형 */
+
+    @media (max-width: 900px) {
+      #detail-section .detail-wrapper {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .home-hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .home-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .profile-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .logo-and-nav {
+        justify-content: space-between;
+      }
+
+      .search-bar {
+        max-width: none;
+      }
+
+      main {
+        padding-inline: 10px;
+      }
+
+      .auth-card {
+        padding: 24px 18px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .user-area {
+        justify-content: space-between;
+      }
+
+      .feed-controls-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 로그인 페이지 -->
+  <section id="login-page" class="page">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span>BidderLive</span>
+        <span style="opacity:.7;">Community</span>
+      </div>
+      <h1>비더라이브 커뮤니티 입장</h1>
+      <p class="subtitle">비더라이브 계정으로 로그인하고 낙찰템을 자랑해보세요.</p>
+
+      <form id="login-form">
+        <label for="login-email">
+          <span class="label-text">이메일</span>
+          <input id="login-email" type="email" placeholder="you@example.com" value="collector@bidderlive.com">
+        </label>
+
+        <label for="login-password">
+          <span class="label-text">비밀번호</span>
+          <input id="login-password" type="password" placeholder="비더라이브 비밀번호" value="1234">
+        </label>
+
+        <fieldset>
+          <legend>역할 선택</legend>
+          <div class="role-row">
+            <label>
+              <input type="radio" name="role" value="buyer" checked>
+              <span>구매자(컬렉터)</span>
+            </label>
+            <label>
+              <input type="radio" name="role" value="seller">
+              <span>판매자(딜러)</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <label for="login-nickname">
+          <span class="label-text">비더라이브 닉네임</span>
+          <input id="login-nickname" type="text" placeholder="비더라이브에서 쓰는 닉네임" value="수집광">
+        </label>
+        <div class="helper-text">
+          · 이 닉네임이 커뮤니티의 게시글/댓글 작성자로 그대로 표시됩니다.
+        </div>
+
+        <button type="submit" class="primary-btn full-width" id="login-submit-btn">로그인</button>
+      </form>
+
+      <div class="auth-footer">
+        <span>아직 계정이 없다면 앱에서 먼저 회원가입을 진행해주세요.</span>
+        <span>비밀번호 찾기</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 메인 앱 -->
+  <div id="app" class="hidden">
+    <header class="top-bar">
+      <div class="logo-and-nav">
+        <div class="logo"><img src="/bidderlive-logo.png" alt="BidderLive 로고"></div>
+        <nav class="main-nav">
+          <button class="nav-link active" data-target="home-section">메인</button>
+          <button class="nav-link" data-target="feed-section">피드</button>
+          <button class="nav-link" data-target="new-post-section">자랑 올리기</button>
+          <button class="nav-link" data-target="my-collection-section">마이컬렉션</button>
+          <button class="nav-link" data-target="profile-section">프로필</button>
+        </nav>
+      </div>
+      <div class="search-bar">
+        <input id="global-search-input" type="text" autocomplete="off" placeholder="제목, 닉네임, 카테고리로 검색" />
+      </div>
+      <div class="user-area">
+        <div class="user-meta">
+          <span class="nickname-label current-nickname">닉네임</span>
+          <span class="role-label" id="current-role-label">역할</span>
+        </div>
+        <button id="hit-share-btn" class="secondary-btn hidden">HIT 공유</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- HOME / 메인 -->
+      <section id="home-section" class="page-section">
+        <div class="section-header">
+          <h2>비더라이브 커뮤니티 메인</h2>
+          <p class="section-subtitle">
+            공지사항, 커뮤니티 이용 규칙, 이벤트와 광고를 한 번에 확인할 수 있는 메인 허브입니다.
+          </p>
+        </div>
+
+        <div class="home-hero">
+          <div class="home-hero-card">
+            <h3 class="home-hero-title">오늘의 커뮤니티 소식</h3>
+            <p class="home-hero-sub">
+              라이브, 48시간 경매, 공동구매 소식과 운영 공지들을 모아 보여드립니다.
+            </p>
+            <div class="home-badges">
+              <span class="home-badge">🚨 점검 공지 주 1회 게시</span>
+              <span class="home-badge">🛡 안전한 거래 보호</span>
+              <span class="home-badge">💬 실시간 커뮤니티 운영</span>
+            </div>
+            <div>
+              <button type="button" class="home-pill-link" data-jump="feed-section">
+                <span class="icon">📸</span>
+                <span>오늘 올라온 자랑 보러가기</span>
+              </button>
+              <button type="button" class="home-pill-link" data-jump="new-post-section">
+                <span class="icon">✨</span>
+                <span>내 낙찰템 자랑 올리기</span>
+              </button>
+            </div>
+            <div class="home-hero-highlight">
+              <div class="home-hero-mini-title">운영팀 한마디</div>
+              <div class="home-hero-item">
+                <span class="label">· 스포·덤핑·사기 행위</span>
+                <span class="value">무관용 정책 적용</span>
+              </div>
+              <div class="home-hero-item">
+                <span class="label">· 거래 관련 분쟁</span>
+                <span class="value">고객센터 / 문의하기로 접수</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-hero-card">
+            <h3 class="home-hero-title">서비스 공지</h3>
+            <p class="home-hero-sub">비더라이브 앱 / 커뮤니티 공지의 요약입니다.</p>
+            <ul class="notice-list">
+              <li class="notice-item">
+                <div class="notice-title">[안내] 비더라이브 커뮤니티 베타 오픈</div>
+                <div class="notice-meta">2025-03-01 · 운영자</div>
+              </li>
+              <li class="notice-item">
+                <div class="notice-title">[점검] 매주 월요일 새벽 4~5시 정기 점검</div>
+                <div class="notice-meta">2025-02-18 · 시스템 공지</div>
+              </li>
+              <li class="notice-item">
+                <div class="notice-title">[중요] 사기 / 현금 거래 유도 계정 제재 안내</div>
+                <div class="notice-meta">2025-02-10 · 안전거래팀</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="home-grid">
+          <div class="tile">
+            <div class="tile-header">
+              <div>
+                <h4 class="tile-title">커뮤니티 이용 규칙</h4>
+                <p class="tile-sub">모든 이용자는 아래 규칙에 동의하는 것으로 간주되며, 위반 시 제재가 있을 수 있습니다.</p>
+              </div>
+            </div>
+            <ul class="rule-list">
+              <li class="rule-item">
+                <span class="rule-index">01</span>
+                <div class="rule-text">비더라이브에서 실제 낙찰/구매한 물건 중심으로 게시글을 작성해 주세요. (타 플랫폼 홍보성 글, 허위 사진 업로드 금지)</div>
+              </li>
+              <li class="rule-item">
+                <span class="rule-index">02</span>
+                <div class="rule-text">욕설, 비방, 혐오 표현, 특정인/딜러에 대한 근거 없는 공격 글은 사전 경고 없이 숨김/삭제 및 계정 제재가 될 수 있습니다.</div>
+              </li>
+              <li class="rule-item">
+                <span class="rule-index">03</span>
+                <div class="rule-text">직거래, 현금 송금, 플랫폼 외 결제를 유도하는 행위는 엄격히 금지되며, 분쟁 발생 시 보상이 불가합니다.</div>
+              </li>
+              <li class="rule-item">
+                <span class="rule-index">04</span>
+                <div class="rule-text">저작권이 있는 이미지/음원/콘텐츠를 무단 사용하지 말아 주세요. (특히 앨범, 아트워크 스캔본 등)</div>
+              </li>
+              <li class="rule-item">
+                <span class="rule-index">05</span>
+                <div class="rule-text">커뮤니티 내 이벤트, 공동구매, 경품 활동 진행 시 반드시 운영정책과 법령을 준수해야 합니다.</div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="tile">
+            <div class="tile-header">
+              <div>
+                <h4 class="tile-title">이벤트 & 광고</h4>
+                <p class="tile-sub">비더라이브 파트너 및 공식 캠페인 영역입니다.</p>
+              </div>
+            </div>
+            <div class="ad-grid">
+              <div class="ad-card">
+                <div class="ad-tag">공식 이벤트</div>
+                <div class="ad-title">친구 초대하면 적립금 지급</div>
+                <div class="ad-desc">내 코드로 가입한 친구가 첫 낙찰하면, 둘 다 적립금을 받는 이벤트!</div>
+              </div>
+              <div class="ad-card">
+                <div class="ad-tag">딜러 프로모션</div>
+                <div class="ad-title">신규 딜러 수수료 우대</div>
+                <div class="ad-desc">입점 첫 달, 특정 카테고리 수수료를 한시적으로 인하합니다.</div>
+              </div>
+              <div class="ad-card">
+                <div class="ad-tag">광고 문의</div>
+                <div class="ad-desc">브랜드/딜러 광고 집행을 원하시면 비더라이브 운영팀에 문의해 주세요.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 메인 썸네일 광고 영역 -->
+        <section class="home-thumb-ads">
+          <div class="tile">
+            <div class="tile-header">
+              <div>
+                <h4 class="tile-title">메인 썸네일 광고</h4>
+                <p class="tile-sub">브랜드·딜러가 등록하는 썸네일형 배너 광고 영역입니다.</p>
+              </div>
+            </div>
+            <div class="thumb-ad-strip">
+              <a class="thumb-ad-card" href="#">
+                <div class="thumb-ad-thumb"
+                  style="background-image:url('https://via.placeholder.com/400x250?text=AD+1');"></div>
+                <div class="thumb-ad-meta">
+                  <div class="thumb-ad-label">AD · 공식 파트너</div>
+                  <div class="thumb-ad-title">주말 한정 라이브 특가전</div>
+                </div>
+              </a>
+              <a class="thumb-ad-card" href="#">
+                <div class="thumb-ad-thumb"
+                  style="background-image:url('https://via.placeholder.com/400x250?text=AD+2');"></div>
+                <div class="thumb-ad-meta">
+                  <div class="thumb-ad-label">AD · 공동구매</div>
+                  <div class="thumb-ad-title">스포츠카드 랜덤박스 공동구매</div>
+                </div>
+              </a>
+              <a class="thumb-ad-card" href="#">
+                <div class="thumb-ad-thumb"
+                  style="background-image:url('https://via.placeholder.com/400x250?text=AD+3');"></div>
+                <div class="thumb-ad-meta">
+                  <div class="thumb-ad-label">AD · 신규 딜러</div>
+                  <div class="thumb-ad-title">프리미엄 피규어 딜러 입점</div>
+                </div>
+              </a>
+              <a class="thumb-ad-card" href="#">
+                <div class="thumb-ad-thumb"
+                  style="background-image:url('https://via.placeholder.com/400x250?text=AD+4');"></div>
+                <div class="thumb-ad-meta">
+                  <div class="thumb-ad-label">AD · 브랜드 스폰서</div>
+                  <div class="thumb-ad-title">한정판 스니커즈 드로우 소식</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 오늘의 TOP 자랑글 -->
+        <section class="home-top-brag-section">
+          <div class="tile">
+            <div class="tile-header">
+              <div>
+                <h4 class="tile-title">오늘의 TOP 자랑글</h4>
+                <p class="tile-sub">커뮤니티에서 특히 반응이 좋았던 자랑글이에요.</p>
+              </div>
+            </div>
+            <div id="home-top-brag-list" class="top-brag-list">
+              <p class="empty-text">인기 자랑글을 불러오는 중입니다.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 개인화 추천 자랑글 -->
+        <section class="home-reco-section">
+          <div class="tile">
+            <div class="tile-header">
+              <div>
+                <h4 class="tile-title"><span id="reco-username">OO</span>님을 위한 추천 자랑</h4>
+                <p class="tile-sub">최근 관심 카테고리와 딜러를 기반으로 골라봤어요.</p>
+              </div>
+            </div>
+            <div id="home-reco-list" class="top-brag-list">
+              <p class="empty-text">로그인하면 맞춤 추천 자랑글을 볼 수 있어요.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 피드 -->
+      <section id="feed-section" class="page-section hidden">
+        <div class="section-header">
+          <h2>커뮤니티 피드</h2>
+          <p class="section-subtitle">
+            카테고리별로 아트토이부터 CD/LP까지, 비더라이브에서 온 낙찰템을 자랑하는 공간입니다.
+          </p>
+          <div class="category-filter">
+            <button class="chip active" data-category="all">전체</button>
+            <button class="chip" data-category="arttoy">아트토이</button>
+            <button class="chip" data-category="figure">피규어</button>
+            <button class="chip" data-category="lego">레고</button>
+            <button class="chip" data-category="sportscard">스포츠카드</button>
+            <button class="chip" data-category="fashion">패션</button>
+            <button class="chip" data-category="gundam">건담</button>
+            <button class="chip" data-category="tradingcard">트레이딩카드</button>
+            <button class="chip" data-category="luxury">명품</button>
+            <button class="chip" data-category="stamp">우표</button>
+            <button class="chip" data-category="cdlp">CD / LP</button>
+          </div>
+        </div>
+
+        <!-- 고정 공지 -->
+        <div class="feed-pinned-notice">
+          <div class="feed-pinned-label">📌 고정 공지 · 운영자</div>
+          <div class="feed-pinned-title">[필독] 비더라이브 커뮤니티 이용 가이드</div>
+          <p class="feed-pinned-body">
+            안전한 거래와 건강한 소통을 위해 반드시 커뮤니티 이용 규칙을 확인해 주세요.
+            위반 시 사전 경고 없이 게시글 숨김/삭제 및 계정 제재가 이루어질 수 있습니다.
+          </p>
+          <button type="button" class="text-btn" id="open-pinned-detail">커뮤니티 이용 규칙 보러가기</button>
+        </div>
+
+        <!-- 카테고리 + 아이디 검색 -->
+        <div class="id-search-row">
+          <select id="category-id-select">
+            <option value="">카테고리 선택</option>
+            <option value="arttoy">아트토이</option>
+            <option value="figure">피규어</option>
+            <option value="lego">레고</option>
+            <option value="sportscard">스포츠카드</option>
+            <option value="fashion">패션</option>
+            <option value="gundam">건담</option>
+            <option value="tradingcard">트레이딩카드</option>
+            <option value="luxury">명품</option>
+            <option value="stamp">우표</option>
+            <option value="cdlp">CD / LP</option>
+          </select>
+          <input id="category-id-input" type="text" placeholder="아이디 (예: 1 또는 arttoy-1)" />
+          <button id="category-id-search-btn" class="secondary-btn">아이디 검색</button>
+        </div>
+        <p class="small-helper">
+          카테고리와 아이디를 입력하면 해당 자랑글 상세 화면으로 이동합니다.
+        </p>
+
+        <!-- 탭 + 정렬 -->
+        <div class="feed-controls-row">
+          <div class="tab-row feed-tab-row">
+            <button class="chip active" data-feed-tab="all">전체 보기</button>
+            <button class="chip" data-feed-tab="brag">자랑 피드</button>
+            <button class="chip" data-feed-tab="hit">HIT 공유 피드</button>
+            <button class="chip" data-feed-tab="followed">팔로우한 딜러 글만</button>
+          </div>
+
+          <div class="feed-sort-row">
+            <label for="feed-sort-select">정렬</label>
+            <select id="feed-sort-select">
+              <option value="latest">최신순</option>
+              <option value="likes">인기순(좋아요)</option>
+              <option value="comments">댓글많은순</option>
+              <option value="hitOnly">HIT만</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="feed-list" class="card-grid">
+          <!-- JS로 테스트 데이터 생성 -->
+        </div>
+      </section>
+
+      <!-- 상세 화면 -->
+      <section id="detail-section" class="page-section hidden">
+        <button id="back-to-feed" class="text-btn">← 피드로 돌아가기</button>
+        <div class="section-header" style="margin-top:6px;">
+          <h2>자랑글 상세</h2>
+          <p class="section-subtitle">낙찰 순간의 이야기를 자세히 볼 수 있어요.</p>
+        </div>
+
+        <div class="detail-wrapper">
+          <article class="detail-card" id="detail-article">
+            <div class="detail-image" id="detail-image"></div>
+            <div class="detail-content">
+              <div class="post-meta">
+                <span class="category-pill" id="detail-category">카테고리</span>
+                <span class="badge badge-hit hidden" id="detail-hit-badge">HIT</span>
+              </div>
+              <h2 class="detail-title" id="detail-title">제목</h2>
+              <p class="detail-desc" id="detail-desc">한 줄 자랑</p>
+              <p class="detail-body" id="detail-body"></p>
+
+              <div class="user-inline profile-link" id="detail-user-inline" data-nickname="" style="margin-top:6px;">
+                <div class="avatar-circle" id="detail-avatar">AA</div>
+                <div>
+                  <div class="nickname" id="detail-nickname">닉네임</div>
+                  <div class="sub" id="detail-subtext"></div>
+                </div>
+              </div>
+
+              <div class="detail-actions">
+                <button class="icon-btn like-btn" id="detail-like-btn" data-liked="false">
+                  <span class="like-icon">♡</span>
+                  <span class="like-count">0</span>
+                </button>
+                <button class="icon-btn" id="share-btn">공유</button>
+                <button class="icon-btn report-post-btn">신고</button>
+                <button class="icon-btn edit-post-btn hidden" id="detail-edit-btn">수정</button>
+                <button class="icon-btn delete-post-btn hidden" id="detail-delete-btn">삭제</button>
+              </div>
+            </div>
+          </article>
+
+          <section class="comments-section">
+            <h3>댓글</h3>
+            <ul id="comment-list" class="comment-list"></ul>
+
+            <form id="comment-form" class="comment-form">
+              <textarea id="comment-input" placeholder="비더라이브 닉네임으로 댓글을 남겨보세요."></textarea>
+              <button type="submit" class="primary-btn">댓글 등록</button>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <!-- 자랑 올리기 -->
+      <section id="new-post-section" class="page-section hidden">
+        <div class="section-header">
+          <h2>낙찰템 자랑하기</h2>
+          <p class="section-subtitle">
+            비더라이브에서 낙찰 받은 물건을 사진과 함께 커뮤니티에 공유해보세요.
+          </p>
+        </div>
+
+        <form id="new-post-form" class="form-card">
+          <label for="new-image">
+            <span class="label-text">썸네일 이미지 (카메라 / 사진 올리기)</span>
+            <input id="new-image" type="file" accept="image/*" capture="environment">
+            <div class="small-helper">
+              · 모바일에서는 카메라가 열리고, PC에서는 파일 선택 창이 열립니다.<br>
+              · 이미 올린 글을 수정할 때 이미지를 다시 선택하지 않으면 기존 이미지가 유지됩니다.
+            </div>
+          </label>
+
+          <!-- NEW: Preview Container -->
+          <div id="preview-container" class="hidden" style="margin-bottom: 14px;">
+            <span class="label-text" style="display:block; margin-bottom:4px;">미리보기</span>
+            <img id="image-preview" src="" alt="Preview"
+              style="max-width: 100%; border-radius: 10px; max-height: 300px; object-fit: cover; border: 1px solid rgba(55,65,81,0.9);">
+          </div>
+
+          <label for="new-category">
+            <span class="label-text">카테고리</span>
+            <select id="new-category">
+              <option value="arttoy">아트토이</option>
+              <option value="figure">피규어</option>
+              <option value="lego">레고</option>
+              <option value="sportscard">스포츠카드</option>
+              <option value="fashion">패션</option>
+              <option value="gundam">건담</option>
+              <option value="tradingcard">트레이딩카드</option>
+              <option value="luxury">명품</option>
+              <option value="stamp">우표</option>
+              <option value="cdlp">CD / LP</option>
+            </select>
+          </label>
+
+          <label for="new-title">
+            <span class="label-text">제목</span>
+            <input id="new-title" type="text" maxlength="50" required placeholder="예: 생애 첫 아트토이 낙찰했습니다">
+          </label>
+
+          <label for="new-desc">
+            <span class="label-text">한 줄 자랑</span>
+            <input id="new-desc" type="text" maxlength="80" required placeholder="낙찰 순간 느낌, 한 줄 자랑을 적어주세요.">
+          </label>
+
+          <label for="new-body">
+            <span class="label-text">상세 후기 (선택)</span>
+            <textarea id="new-body" placeholder="방송 분위기, 셀러 후기, 포장 상태 등 상세 후기를 자유롭게 적어주세요."></textarea>
+          </label>
+
+          <button type="submit" class="primary-btn" id="submit-post-btn">커뮤니티에 올리기</button>
+        </form>
+      </section>
+
+      <!-- 마이컬렉션 -->
+      <section id="my-collection-section" class="page-section hidden">
+        <div class="section-header">
+          <h2>마이컬렉션</h2>
+          <p class="section-subtitle">
+            내가 올린 자랑글과 좋아요한 게시글을 한 번에 모아볼 수 있어요. 내 글은 여기서도 수정/삭제할 수 있습니다.
+          </p>
+        </div>
+
+        <div class="tab-row">
+          <button class="chip active" data-my-tab="mine">내가 올린 글</button>
+          <button class="chip" data-my-tab="liked">좋아요한 글</button>
+        </div>
+
+        <div id="my-posts" class="card-grid">
+          <p class="empty-text">아직 올린 자랑글이 없습니다. 첫 글을 올려보세요!</p>
+        </div>
+
+        <div id="liked-posts" class="card-grid hidden">
+          <p class="empty-text">좋아요한 글이 여기에 모입니다.</p>
+        </div>
+      </section>
+
+      <!-- 프로필 -->
+      <section id="profile-section" class="page-section hidden">
+        <div class="section-header">
+          <h2>프로필</h2>
+          <p class="section-subtitle">
+            사용자 정보, 선호 카테고리, 최근 자랑글과 딜러 정보를 한 곳에서 볼 수 있어요.
+          </p>
+        </div>
+
+        <div class="profile-layout">
+          <div class="profile-main">
+            <div class="profile-card enhanced">
+              <div class="profile-cover" id="profile-cover"
+                style="background-image: url('https://via.placeholder.com/800x200?text=Cover+Image');"></div>
+
+              <div class="profile-content-wrapper">
+                <div class="profile-header-enhanced">
+                  <div class="profile-names">
+                    <div class="avatar-circle profile-avatar-large" id="profile-avatar">NN</div>
+                    <div style="margin-top: 12px;">
+                      <h3 id="profile-nickname">닉네임</h3>
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="profile-role-pill" id="profile-role-pill">컬렉터</span>
+                        <span class="profile-operator-badge hidden" id="profile-operator-badge">운영자</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="profile-actions">
+                    <button type="button" class="secondary-btn hidden" id="profile-follow-btn">팔로우</button>
+                    <button type="button" class="secondary-btn hidden" id="profile-block-btn">차단하기</button>
+                  </div>
+                </div>
+
+                <p class="profile-bio" id="profile-bio">프로필 소개가 여기에 표시됩니다.</p>
+
+                <div class="profile-stats-row">
+                  <div class="stat-item">
+                    <span class="stat-value" id="profile-stat-followers">0</span>
+                    <span class="stat-label">팔로워</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-value" id="profile-stat-following">0</span>
+                    <span class="stat-label">팔로잉</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-value" id="profile-stat-likes">0</span>
+                    <span class="stat-label">받은 좋아요</span>
+                  </div>
+                </div>
+
+                <div class="profile-meta-row" style="border-top:none; padding-top:0; margin-top:0;">
+                  <div>
+                    <div class="profile-meta-label">활동 배지</div>
+                    <div class="profile-badges" id="profile-badges">
+                      <!-- badges -->
+                    </div>
+                  </div>
+                </div>
+
+                <div class="profile-meta-row">
+                  <div>
+                    <div class="profile-meta-label">선호 카테고리</div>
+                    <div class="profile-category-chips" id="profile-preferred-categories">
+                      <!-- chips -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tile">
+              <div class="tile-header">
+                <div>
+                  <h4 class="tile-title">최근 자랑글</h4>
+                  <p class="tile-sub" id="profile-recent-sub">이 사용자가 올린 최근 자랑글입니다.</p>
+                </div>
+              </div>
+              <div id="profile-recent-posts" class="card-grid">
+                <p class="empty-text">작성한 자랑글이 없습니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <aside class="profile-side">
+            <div class="tile profile-dealer-card hidden" id="profile-dealer-card">
+              <div class="tile-header">
+                <div>
+                  <h4 class="tile-title">딜러 정보</h4>
+                  <p class="tile-sub">비더라이브 라이브/경매 진행 정보</p>
+                </div>
+              </div>
+              <div class="profile-dealer-body">
+                <div class="profile-dealer-rating">
+                  ★ <span id="profile-dealer-rating">4.8</span> / 5.0
+                </div>
+                <div class="profile-dealer-meta">
+                  <div class="profile-meta-label">주요 카테고리</div>
+                  <div id="profile-dealer-categories" class="profile-category-chips"></div>
+                </div>
+                <a id="profile-live-link" href="#" class="home-pill-link" target="_blank" rel="noopener noreferrer">
+                  <span class="icon">▶</span>
+                  <span>이 딜러의 라이브 보러가기</span>
+                </a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 신고 모달 -->
+  <div id="report-modal" class="modal-backdrop hidden">
+    <div class="modal">
+      <h3>신고하기</h3>
+      <p>신고 사유를 선택해 주세요. 운영자가 검토 후 조치합니다.</p>
+      <p class="modal-target" id="report-target-text"></p>
+      <div class="modal-options">
+        <label><input type="radio" name="report-reason" value="스팸/홍보" checked> 스팸 / 홍보성 콘텐츠</label>
+        <label><input type="radio" name="report-reason" value="욕설/비하"> 욕설 / 비하 / 혐오 표현</label>
+        <label><input type="radio" name="report-reason" value="사기/현금거래 유도"> 사기 / 현금 거래 유도</label>
+        <label><input type="radio" name="report-reason" value="선정적/불건전 콘텐츠"> 선정적 / 불건전 콘텐츠</label>
+        <label><input type="radio" name="report-reason" value="기타"> 기타</label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" id="report-cancel-btn">취소</button>
+        <button type="button" class="primary-btn" id="report-submit-btn">신고 보내기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const CATEGORY_CONFIG = {
+        arttoy: '아트토이',
+        figure: '피규어',
+        lego: '레고',
+        sportscard: '스포츠카드',
+        fashion: '패션',
+        gundam: '건담',
+        tradingcard: '트레이딩카드',
+        luxury: '명품',
+        stamp: '우표',
+        cdlp: 'CD / LP'
+      };
+
+      const DEALER_AUTHORS = new Set([
+        'statue_lover',
+        'sports_card_king',
+        'box_breaker',
+        'LEGO_city',
+        'sneakerhead',
+        'vinyl_only',
+        'boxsetlover'
+      ]);
+
+      // 테스트 데이터 6개 * 10카테고리 (동일 + 일부 딜러로 가정)
+      const TEST_POSTS = [
+        // 아트토이
+        { id: 'arttoy-1', category: 'arttoy', title: '페이퍼 아트토이 첫 낙찰', oneLiner: '생각보다 크고 디테일 좋아요.', body: '컬러감이 화면에서 보던 그대로라 만족스럽습니다.', author: 'arttoy_collector', imageUrl: 'https://images.unsplash.com/photo-1560167016-022b78a0258e?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 12, commentCount: 3 },
+        { id: 'arttoy-2', category: 'arttoy', title: '커스텀 베어브릭 자랑', oneLiner: '커스텀 페인팅 퀄리티 미쳤습니다.', body: '', author: 'BEARBRICK_LAB', imageUrl: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 8, commentCount: 2 },
+        { id: 'arttoy-3', category: 'arttoy', title: '글로우 인 더 다크 아트토이', oneLiner: '불 끄면 야광이 은은하게 나와요.', body: '밤에만 꺼내 놓고 감상 중입니다.', author: '야광좋아', imageUrl: 'https://images.unsplash.com/photo-1535581652167-3d6b98c36cd7?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 1 },
+        { id: 'arttoy-4', category: 'arttoy', title: '작가 한정판 아트토이', oneLiner: '넘버링까지 있는 레어템입니다.', body: '', author: 'limited_only', imageUrl: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 20, commentCount: 4 },
+        { id: 'arttoy-5', category: 'arttoy', title: '처음 사본 디자이너 토이', oneLiner: '입문용으로 딱 좋은 사이즈.', body: '포장도 안전하게 잘 왔어요.', author: '입문러', imageUrl: 'https://images.unsplash.com/photo-1566576912902-1dcd273d6744?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 4, commentCount: 0 },
+        { id: 'arttoy-6', category: 'arttoy', title: '미개봉 상태 유지 중', oneLiner: '언박싱할까 말까 고민이에요.', body: '', author: '언박싱참는중', imageUrl: 'https://images.unsplash.com/photo-1581557991964-125469da3b8a?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 9, commentCount: 2 },
+
+        // 피규어
+        { id: 'figure-1', category: 'figure', title: '애니 캐릭터 1/6 스케일 피규어', oneLiner: '관절 가동률 좋아서 포징 맛집.', body: '얼굴 조형도 기대 이상입니다.', author: '피덕', imageUrl: 'https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 18, commentCount: 5 },
+        { id: 'figure-2', category: 'figure', title: '프리미엄 스태츄 피규어', oneLiner: '박스부터 포스가 다릅니다.', body: '', author: 'statue_lover', imageUrl: 'https://images.unsplash.com/photo-1626240212879-c294107147ce?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 25, commentCount: 6 },
+        { id: 'figure-3', category: 'figure', title: '미소녀 피규어 컬렉션 추가', oneLiner: '피부 표현이 너무 자연스러워요.', body: '', author: 'moe_moe', imageUrl: 'https://images.unsplash.com/photo-1580894908361-967195033215?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 7, commentCount: 1 },
+        { id: 'figure-4', category: 'figure', title: '디오라마 세트와 함께 온 피규어', oneLiner: '배경까지 같이 오니까 분위기가 살아요.', body: '선반 한 칸을 그대로 디오라마 존으로.', author: '디오라마장인', imageUrl: 'https://images.unsplash.com/photo-1593085512500-bfd11932f8a7?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 10, commentCount: 2 },
+        { id: 'figure-5', category: 'figure', title: '중고지만 상태 좋은 피규어', oneLiner: '박스만 사용감 있고 본체는 신품급.', body: '', author: '세컨핸드러버', imageUrl: 'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 6, commentCount: 0 },
+        { id: 'figure-6', category: 'figure', title: '루즈 파츠까지 완벽한 셋', oneLiner: '손 파츠가 다양해서 좋네요.', body: '', author: '파츠수집가', imageUrl: 'https://images.unsplash.com/photo-1560526860-2934e27606e6?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 3, commentCount: 0 },
+
+        // 레고
+        { id: 'lego-1', category: 'lego', title: '레고 모듈러 빌딩 완성', oneLiner: '주말 동안 올인해서 완성했습니다.', body: '다음 모듈러도 노리고 있어요.', author: 'LEGO_city', imageUrl: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 22, commentCount: 4 },
+        { id: 'lego-2', category: 'lego', title: '레고 자동차 시리즈 추가', oneLiner: '디자인 진짜 잘 뽑혔습니다.', body: '', author: 'brick_racer', imageUrl: 'https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 9, commentCount: 1 },
+        { id: 'lego-3', category: 'lego', title: '아이랑 같이 맞춘 레고', oneLiner: '가족 프로젝트로 딱입니다.', body: '', author: 'family_builder', imageUrl: 'https://images.unsplash.com/photo-1518946222227-364f22132616?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 11, commentCount: 2 },
+        { id: 'lego-4', category: 'lego', title: '단종 세트 어렵게 구했습니다', oneLiner: '박스만 봐도 행복해요.', body: '', author: '단종헌터', imageUrl: 'https://images.unsplash.com/photo-1472457897821-70d3819a0e24?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 19, commentCount: 3 },
+        { id: 'lego-5', category: 'lego', title: '레고 미니피규어 모음', oneLiner: '랜덤 뽑기에서 원하던 캐릭터 득템!', body: '', author: 'mini_fig', imageUrl: 'https://images.unsplash.com/photo-1559583109-3e79eb8ac642?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 1 },
+        { id: 'lego-6', category: 'lego', title: '책장 한 칸이 전부 레고', oneLiner: '이제 수납이 고민입니다.', body: '', author: '수납필요', imageUrl: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 4, commentCount: 0 },
+
+        // 스포츠카드
+        { id: 'sportscard-1', category: 'sportscard', title: '루키 카드 PSA 10', oneLiner: '평생 소장 각입니다.', body: '', author: 'sports_card_king', imageUrl: 'https://images.unsplash.com/photo-1629904853716-f004320d874c?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 30, commentCount: 7 },
+        { id: 'sportscard-2', category: 'sportscard', title: '한 박스에서 나온 히트 카드', oneLiner: '라이브에서 같이 소리 질렀어요.', body: '', author: 'box_breaker', imageUrl: 'https://images.unsplash.com/photo-1613771404721-c5b482d3a921?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 17, commentCount: 3 },
+        { id: 'sportscard-3', category: 'sportscard', title: '온카드 사인 카드 자랑', oneLiner: '스티커 아닌 온카드라 더 값지네요.', body: '', author: 'auto_sign', imageUrl: 'https://images.unsplash.com/photo-1607326610092-cad42771767d?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 8, commentCount: 1 },
+        { id: 'sportscard-4', category: 'sportscard', title: '넘버링 카드 모으는 중', oneLiner: '이번엔 /25 득템했습니다.', body: '', author: 'numbered_only', imageUrl: 'https://images.unsplash.com/photo-1554131694-3d917173295e?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 6, commentCount: 0 },
+        { id: 'sportscard-5', category: 'sportscard', title: '레전드 선수 포함된 세트', oneLiner: '어릴 때 보던 선수 카드라 감회가 새롭네요.', body: '', author: 'old_school', imageUrl: 'https://images.unsplash.com/photo-1561069934-ee2258988530?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 0 },
+        { id: 'sportscard-6', category: 'sportscard', title: '컬러 매치 평행 카드', oneLiner: '유니폼 컬러랑 딱 맞아서 예쁩니다.', body: '', author: 'colour_match', imageUrl: 'https://images.unsplash.com/photo-1599326124394-b32f5c2309e6?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 9, commentCount: 2 },
+
+        // 패션
+        { id: 'fashion-1', category: 'fashion', title: '희귀 스니커즈 낙찰', oneLiner: '박스 상태까지 완벽합니다.', body: '', author: 'sneakerhead', imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 21, commentCount: 4 },
+        { id: 'fashion-2', category: 'fashion', title: '스트릿 브랜드 후드티', oneLiner: '실물이 훨씬 예쁜 컬러.', body: '', author: 'street_style', imageUrl: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 10, commentCount: 1 },
+        { id: 'fashion-3', category: 'fashion', title: '아카이브 티셔츠 자랑', oneLiner: '구하기 힘든 시즌 제품이에요.', body: '', author: 'archive_hunter', imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 7, commentCount: 0 },
+        { id: 'fashion-4', category: 'fashion', title: '한정판 캡 모자', oneLiner: '데일리로 쓰기 좋은 핏.', body: '', author: 'cap_collector', imageUrl: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89f?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 4, commentCount: 0 },
+        { id: 'fashion-5', category: 'fashion', title: '빈티지 데님 팬츠', oneLiner: '워싱감이 진짜 예쁩니다.', body: '', author: 'denimlover', imageUrl: 'https://images.unsplash.com/photo-1542272617-08f08630329e?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 6, commentCount: 1 },
+        { id: 'fashion-6', category: 'fashion', title: '아웃도어 재킷', oneLiner: '방수 테스트 완료했습니다.', body: '', author: 'camping', imageUrl: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 3, commentCount: 0 },
+
+        // 건담
+        { id: 'gundam-1', category: 'gundam', title: 'MG 건담 조립 완성', oneLiner: '관절 튼튼하고 프로포션 좋습니다.', body: '', author: 'gunpla_builder', imageUrl: 'https://images.unsplash.com/photo-1614726365723-49cfae9e0963?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 16, commentCount: 3 },
+        { id: 'gundam-2', category: 'gundam', title: 'RG 프라모델 디테일 자랑', oneLiner: '작은데도 디테일이 미쳤어요.', body: '', author: 'rg_mania', imageUrl: 'https://images.unsplash.com/photo-1594376991621-69884d316872?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 9, commentCount: 1 },
+        { id: 'gundam-3', category: 'gundam', title: '프리미엄 컬러 한정판', oneLiner: '메탈릭 도색이 고급스럽습니다.', body: '', author: 'metallic', imageUrl: 'https://images.unsplash.com/photo-1614726365202-03d4f180d983?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 13, commentCount: 2 },
+        { id: 'gundam-4', category: 'gundam', title: '첫 에어브러시 도색 건담', oneLiner: '손으로 칠하는 맛이 있네요.', body: '', author: '도색초보', imageUrl: 'https://images.unsplash.com/photo-1560167016-022b78a0258e?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 7, commentCount: 1 },
+        { id: 'gundam-5', category: 'gundam', title: '포징용 스탠드까지 세트', oneLiner: '공중 포즈 연출이 최고.', body: '', author: 'pose_master', imageUrl: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 0 },
+        { id: 'gundam-6', category: 'gundam', title: 'MGEX 시리즈 도전', oneLiner: '조립 난이도 있지만 완성하면 뿌듯합니다.', body: '', author: 'MGEX_challenger', imageUrl: 'https://images.unsplash.com/photo-1606663889134-b1dedb5ed8b7?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 11, commentCount: 2 },
+
+        // 트레이딩카드
+        { id: 'tradingcard-1', category: 'tradingcard', title: 'TCG 시크릿 레어 카드', oneLiner: '포일 반짝임이 장난 아닙니다.', body: '', author: 'tcg_secret', imageUrl: 'https://images.unsplash.com/photo-1639718727577-43850931934c?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 14, commentCount: 3 },
+        { id: 'tradingcard-2', category: 'tradingcard', title: '박스 뜯다가 나온 얼터너티브 아트', oneLiner: '그림체가 너무 마음에 들어요.', body: '', author: 'alt_art', imageUrl: 'https://images.unsplash.com/photo-1622643626258-c1dbed80e318?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 10, commentCount: 1 },
+        { id: 'tradingcard-3', category: 'tradingcard', title: '풀아트 트레이너 카드', oneLiner: '컬렉션의 하이라이트가 생겼습니다.', body: '', author: 'trainer_collector', imageUrl: 'https://images.unsplash.com/photo-1607462109225-6b64ae2dd3cb?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 6, commentCount: 0 },
+        { id: 'tradingcard-4', category: 'tradingcard', title: '한 팩에서 더블 히트', oneLiner: '라이브 채팅창이 난리 났던 그 순간.', body: '', author: 'double_hit', imageUrl: 'https://images.unsplash.com/photo-1613771404721-c5b482d3a921?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 18, commentCount: 4 },
+        { id: 'tradingcard-5', category: 'tradingcard', title: '오래 찾던 구 시리즈 카드', oneLiner: '상태까지 준수해서 만족합니다.', body: '', author: 'old_series', imageUrl: 'https://images.unsplash.com/photo-1554131694-3d917173295e?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 1 },
+        { id: 'tradingcard-6', category: 'tradingcard', title: '커스텀 슬리브에 넣어봤어요', oneLiner: '슬리브까지 맞춰주니 더 예뻐요.', body: '', author: 'sleeve_mania', imageUrl: 'https://images.unsplash.com/photo-1607326610092-cad42771767d?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 3, commentCount: 0 },
+
+        // 명품
+        { id: 'luxury-1', category: 'luxury', title: '빈티지 명품 가방', oneLiner: '컨디션 정말 좋습니다.', body: '', author: 'lux_vintage', imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 19, commentCount: 4 },
+        { id: 'luxury-2', category: 'luxury', title: '한정판 지갑', oneLiner: '컬러가 흔하지 않아서 더 마음에 들어요.', body: '', author: 'walletlover', imageUrl: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 8, commentCount: 1 },
+        { id: 'luxury-3', category: 'luxury', title: '시계 컬렉션에 새 멤버', oneLiner: '줄 교체해서 데일리로 착용 중입니다.', body: '', author: 'watch_addict', imageUrl: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 12, commentCount: 2 },
+        { id: 'luxury-4', category: 'luxury', title: '실키한 스카프', oneLiner: '포인트 아이템으로 최고.', body: '', author: 'silk_scarf', imageUrl: 'https://images.unsplash.com/photo-1582142327595-5154534c1a74?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 4, commentCount: 0 },
+        { id: 'luxury-5', category: 'luxury', title: '명품 벨트 새로 장만', oneLiner: '허리 사이즈 딱 맞아서 기분 좋네요.', body: '', author: 'beltcol', imageUrl: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 1 },
+        { id: 'luxury-6', category: 'luxury', title: '클래식 카드 지갑', oneLiner: '심플해서 오래 쓸 것 같습니다.', body: '', author: 'simple_lux', imageUrl: 'https://images.unsplash.com/photo-1605733513597-a8f8341084e6?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 3, commentCount: 0 },
+
+        // 우표
+        { id: 'stamp-1', category: 'stamp', title: '올드 코리아 우표 세트', oneLiner: '역사가 느껴지는 디자인.', body: '', author: 'stamp_history', imageUrl: 'https://images.unsplash.com/photo-1583324113626-70df0f4deaab?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 7, commentCount: 1 },
+        { id: 'stamp-2', category: 'stamp', title: '한정 기념우표', oneLiner: '발행 수량이 적어서 더 귀해요.', body: '', author: 'limited_stamp', imageUrl: 'https://images.unsplash.com/photo-1603792907191-89e55f70099a?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 6, commentCount: 1 },
+        { id: 'stamp-3', category: 'stamp', title: '동물 시리즈 우표', oneLiner: '아이랑 같이 모으는 중입니다.', body: '', author: 'animal_stamp', imageUrl: 'https://images.unsplash.com/photo-1592422164092-c13232642c09?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 4, commentCount: 0 },
+        { id: 'stamp-4', category: 'stamp', title: '소형 시트 우표', oneLiner: '액자에 넣어 걸어두었어요.', body: '', author: 'frame_it', imageUrl: 'https://images.unsplash.com/photo-1579273166152-d725a4e2b755?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 0 },
+        { id: 'stamp-5', category: 'stamp', title: '세계 도시 시리즈', oneLiner: '지도와 함께 전시 중입니다.', body: '', author: 'world_stamp', imageUrl: 'https://images.unsplash.com/photo-1529338296731-c4280a44fc4e?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 3, commentCount: 0 },
+        { id: 'stamp-6', category: 'stamp', title: '희귀 오류 인쇄 우표', oneLiner: '작은 오타가 오히려 매력적.', body: '', author: 'error_stamp', imageUrl: 'https://images.unsplash.com/photo-1620401537439-90f9dd52fe4f?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 11, commentCount: 2 },
+
+        // CD / LP
+        { id: 'cdlp-1', category: 'cdlp', title: '초판 LP 레코드', oneLiner: '바늘 올리는 순간 소름.', body: '', author: 'vinyl_only', imageUrl: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80', isHit: true, likeCount: 20, commentCount: 4 },
+        { id: 'cdlp-2', category: 'cdlp', title: '사인이 들어간 CD', oneLiner: '팬이라면 필수 소장템.', body: '', author: 'signed_cd', imageUrl: 'https://images.unsplash.com/photo-1619983081563-430f63602796?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 9, commentCount: 1 },
+        { id: 'cdlp-3', category: 'cdlp', title: '한정판 컬러 바이닐', oneLiner: '플레잉보다 눈으로 먼저 즐기게 됩니다.', body: '', author: 'color_vinyl', imageUrl: 'https://images.unsplash.com/photo-1459749411177-3c2ea0436964?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 8, commentCount: 1 },
+        { id: 'cdlp-4', category: 'cdlp', title: '박스 세트 앨범', oneLiner: '북릿 구성까지 완벽.', body: '', author: 'boxsetlover', imageUrl: 'https://images.unsplash.com/photo-1514525253440-b393452e8d26?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 6, commentCount: 0 },
+        { id: 'cdlp-5', category: 'cdlp', title: '중고지만 보관 상태 좋은 LP', oneLiner: '스크래치 거의 없습니다.', body: '', author: 'secondhand_vinyl', imageUrl: 'https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 5, commentCount: 0 },
+        { id: 'cdlp-6', category: 'cdlp', title: '라이브 앨범 CD', oneLiner: '공연장 분위기가 그대로 느껴져요.', body: '', author: 'live_record', imageUrl: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&w=600&q=80', isHit: false, likeCount: 4, commentCount: 0 }
+      ];
+
+      const loginPage = document.getElementById('login-page');
+      const loginForm = document.getElementById('login-form');
+      const nicknameInput = document.getElementById('login-nickname');
+      const app = document.getElementById('app');
+      const nicknameLabels = document.querySelectorAll('.current-nickname');
+      const roleLabel = document.getElementById('current-role-label');
+      const hitShareBtn = document.getElementById('hit-share-btn');
+
+      const navLinks = document.querySelectorAll('.nav-link');
+      const sections = document.querySelectorAll('.page-section');
+      const categoryChips = document.querySelectorAll('.category-filter .chip');
+      const feedTabButtons = document.querySelectorAll('[data-feed-tab]');
+
+      const categoryIdSelect = document.getElementById('category-id-select');
+      const categoryIdInput = document.getElementById('category-id-input');
+      const categoryIdSearchBtn = document.getElementById('category-id-search-btn');
+
+      const feedSortSelect = document.getElementById('feed-sort-select');
+
+      const feedList = document.getElementById('feed-list');
+      const backToFeedBtn = document.getElementById('back-to-feed');
+
+      const detailImage = document.getElementById('detail-image');
+      const detailCategory = document.getElementById('detail-category');
+      const detailHitBadge = document.getElementById('detail-hit-badge');
+      const detailTitle = document.getElementById('detail-title');
+      const detailDesc = document.getElementById('detail-desc');
+      const detailBody = document.getElementById('detail-body');
+      const detailAvatar = document.getElementById('detail-avatar');
+      const detailNickname = document.getElementById('detail-nickname');
+      const detailSubtext = document.getElementById('detail-subtext');
+      const detailUserInline = document.getElementById('detail-user-inline');
+      const detailLikeBtn = document.getElementById('detail-like-btn');
+      const detailEditBtn = document.getElementById('detail-edit-btn');
+      const detailDeleteBtn = document.getElementById('detail-delete-btn');
+
+      const commentList = document.getElementById('comment-list');
+      const commentForm = document.getElementById('comment-form');
+      const commentInput = document.getElementById('comment-input');
+
+      const newPostForm = document.getElementById('new-post-form');
+      const newImageInput = document.getElementById('new-image');
+      const newCategorySelect = document.getElementById('new-category');
+      const newTitleInput = document.getElementById('new-title');
+      const newDescInput = document.getElementById('new-desc');
+      const newBodyInput = document.getElementById('new-body');
+      const submitPostBtn = document.getElementById('submit-post-btn');
+
+      // NEW: Preview Elements
+      const previewContainer = document.getElementById('preview-container');
+      const imagePreview = document.getElementById('image-preview');
+
+      const myTabButtons = document.querySelectorAll('[data-my-tab]');
+      const myPostsContainer = document.getElementById('my-posts');
+      const likedPostsContainer = document.getElementById('liked-posts');
+
+      const searchInput = document.getElementById('global-search-input');
+
+      const homeTopBragList = document.getElementById('home-top-brag-list');
+      const homeRecoList = document.getElementById('home-reco-list');
+      const recoUsernameSpan = document.getElementById('reco-username');
+
+      const profileAvatar = document.getElementById('profile-avatar');
+      const profileNickname = document.getElementById('profile-nickname');
+      const profileRolePill = document.getElementById('profile-role-pill');
+      const profileOperatorBadge = document.getElementById('profile-operator-badge');
+      const profileBio = document.getElementById('profile-bio');
+      const profilePreferredCategories = document.getElementById('profile-preferred-categories');
+      const profileFollowBtn = document.getElementById('profile-follow-btn');
+      const profileBlockBtn = document.getElementById('profile-block-btn');
+      const profileRecentPosts = document.getElementById('profile-recent-posts');
+      const profileDealerCard = document.getElementById('profile-dealer-card');
+      const profileDealerRating = document.getElementById('profile-dealer-rating');
+      const profileDealerCategories = document.getElementById('profile-dealer-categories');
+      const profileLiveLink = document.getElementById('profile-live-link');
+      const profileRecentSub = document.getElementById('profile-recent-sub');
+
+      // NEW: Profile Elements
+      const profileCover = document.getElementById('profile-cover');
+      const profileStatFollowers = document.getElementById('profile-stat-followers');
+      const profileStatFollowing = document.getElementById('profile-stat-following');
+      const profileStatLikes = document.getElementById('profile-stat-likes');
+      const profileBadges = document.getElementById('profile-badges');
+
+      const reportModal = document.getElementById('report-modal');
+      const reportTargetText = document.getElementById('report-target-text');
+      const reportSubmitBtn = document.getElementById('report-submit-btn');
+      const reportCancelBtn = document.getElementById('report-cancel-btn');
+      const pinnedDetailBtn = document.getElementById('open-pinned-detail');
+
+      let currentUser = null;
+      let currentPostId = null;
+      let editingPostId = null;
+      let currentHitFilter = 'all';
+      let newPostMode = 'brag';
+      let currentSort = 'latest';
+      let currentProfileNickname = null;
+      let currentCategoryFilter = 'all';
+      let creationCounter = 0;
+      let reportTarget = null;
+
+      const posts = {};
+      const commentsByPostId = {};
+      const followingUsers = new Set();
+      const followingDealers = new Set();
+      const blockedUsers = new Set();
+      const userProfiles = {};
+
+      function getAvatarInitial(nickname) {
+        if (!nickname) return '?';
+        return nickname.slice(0, 2);
+      }
+
+      function isDealerNickname(nickname) {
+        if (!nickname) return false;
+        if (currentUser && currentUser.nickname === nickname && currentUser.role === 'seller') {
+          return true;
+        }
+        return DEALER_AUTHORS.has(nickname);
+      }
+
+      function showOnlySection(id) {
+        sections.forEach(sec => {
+          sec.classList.toggle('hidden', sec.id !== id);
+        });
+      }
+
+      function activateNavFor(id) {
+        navLinks.forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.target === id);
+        });
+      }
+
+      function createPostFromData(data, isOwn) {
+        const post = Object.assign({}, data);
+        post.categoryLabel = CATEGORY_CONFIG[post.category] || '기타';
+        post.likeCount = typeof post.likeCount === 'number' ? post.likeCount : 0;
+        post.commentCount = typeof post.commentCount === 'number' ? post.commentCount : 0;
+        post.likedByCurrentUser = !!post.likedByCurrentUser;
+        post.isHit = !!post.isHit;
+        post.sourceType = post.sourceType || (post.isHit ? 'hit' : 'brag');
+        post.isOwn = !!isOwn;
+        post.author = post.author || '';
+        post.createdAt = typeof post.createdAt === 'number'
+          ? post.createdAt
+          : (++creationCounter);
+        posts[post.id] = post;
+        return post;
+      }
+
+      function renderPostCard(post) {
+        const article = document.createElement('article');
+        article.className = 'post-card';
+        article.dataset.id = post.id;
+        article.dataset.category = post.category;
+        article.dataset.categoryLabel = post.categoryLabel;
+        article.dataset.author = post.author || '';
+        article.dataset.oneLiner = post.oneLiner || '';
+        article.dataset.body = post.body || '';
+        article.dataset.image = post.imageUrl || '';
+        article.dataset.createdAt = post.createdAt || 0;
+
+        const avatarInitial = getAvatarInitial(post.author);
+        const isHit = !!post.isHit;
+
+        const descText = post.body
+          ? post.oneLiner + ' · ' + (post.body.length > 40 ? post.body.substring(0, 40) + '…' : post.body)
+          : post.oneLiner;
+
+        const isDealer = isDealerNickname(post.author);
+        const userTypeLabel = isDealer ? '딜러' : '컬렉터';
+
+        const showOwnerTools = currentUser && post.author === currentUser.nickname;
+
+        article.innerHTML =
+          '<div class="post-image" style="background-image:url(\''
+          + (post.imageUrl || 'https://via.placeholder.com/600x380?text=BidderLive+Item')
+          + '\');"></div>'
+          + '<div class="post-body">'
+          + '  <div class="post-meta">'
+          + '    <span class="category-pill">' + post.categoryLabel + '</span>'
+          + (isHit ? '<span class="badge badge-hit">HIT</span>' : '')
+          + '  </div>'
+          + '  <h3 class="post-title">' + (post.title || '') + '</h3>'
+          + '  <p class="post-desc">' + (descText || '') + '</p>'
+          + '  <div class="post-footer">'
+          + '    <div class="user-inline profile-link" data-nickname="' + (post.author || '') + '">'
+          + '      <div class="avatar-circle">' + avatarInitial + '</div>'
+          + '      <div>'
+          + '        <div class="nickname">' + (post.author || '') + '</div>'
+          + '        <div class="sub">' + post.categoryLabel + ' · ' + userTypeLabel + '</div>'
+          + '      </div>'
+          + '    </div>'
+          + '    <div class="social-inline">'
+          + '      <button class="icon-btn like-btn" data-liked="'
+          + (post.likedByCurrentUser ? 'true' : 'false') + '">'
+          + '        <span class="like-icon">' + (post.likedByCurrentUser ? '♥' : '♡') + '</span>'
+          + '        <span class="like-count">' + post.likeCount + '</span>'
+          + '      </button>'
+          + '      <button class="icon-btn open-detail-btn">💬 ' + post.commentCount + '</button>'
+          + '      <button class="icon-btn report-post-btn">신고</button>'
+          + '    </div>'
+          + '  </div>'
+          + (showOwnerTools
+            ? '<div class="owner-tools">'
+            + '<span class="owner-pill">MY</span>'
+            + '<button type="button" class="text-btn edit-post-btn">수정</button>'
+            + '<button type="button" class="text-btn delete-post-btn">삭제</button>'
+            + '</div>'
+            : '')
+          + '</div>';
+
+        return article;
+      }
+
+      function applyCategoryFilter() {
+        const cards = document.querySelectorAll('#feed-list .post-card');
+        cards.forEach(card => {
+          const cardCategory = card.dataset.category;
+          const match = currentCategoryFilter === 'all'
+            ? true
+            : cardCategory === currentCategoryFilter;
+          card.classList.toggle('hidden-by-category', !match);
+        });
+      }
+
+      function applyHitFilter() {
+        const cards = document.querySelectorAll('#feed-list .post-card');
+        cards.forEach(card => {
+          const postId = card.dataset.id;
+          const post = posts[postId];
+          if (!post) return;
+          const isHit = !!post.isHit;
+          const author = post.author || '';
+          let match = true;
+
+          if (currentHitFilter === 'brag') {
+            match = !isHit;
+          } else if (currentHitFilter === 'hit') {
+            match = isHit;
+          } else if (currentHitFilter === 'followed') {
+            const dealer = isDealerNickname(author);
+            match = dealer && followingDealers.has(author);
+          }
+
+          card.classList.toggle('hidden-by-type', !match);
+        });
+      }
+
+      function applySort() {
+        if (!feedList) return;
+        const cards = Array.from(feedList.querySelectorAll('.post-card'));
+        if (!cards.length) return;
+
+        cards.sort((a, b) => {
+          const postA = posts[a.dataset.id];
+          const postB = posts[b.dataset.id];
+          if (!postA || !postB) return 0;
+
+          if (currentSort === 'likes') {
+            const diff = (postB.likeCount || 0) - (postA.likeCount || 0);
+            if (diff !== 0) return diff;
+          } else if (currentSort === 'comments') {
+            const diff = (postB.commentCount || 0) - (postA.commentCount || 0);
+            if (diff !== 0) return diff;
+          }
+          return (postB.createdAt || 0) - (postA.createdAt || 0);
+        });
+
+        cards.forEach(card => feedList.appendChild(card));
+      }
+
+      function applySearchFilter() {
+        if (!searchInput) return;
+        const term = searchInput.value.trim().toLowerCase();
+        const cards = document.querySelectorAll('#feed-list .post-card, #my-posts .post-card, #liked-posts .post-card');
+        cards.forEach(card => {
+          const title = card.querySelector('.post-title')?.textContent || '';
+          const desc = card.querySelector('.post-desc')?.textContent || '';
+          const author = card.dataset.author || '';
+          const categoryLabel = card.dataset.categoryLabel || '';
+          const haystack = (title + ' ' + desc + ' ' + author + ' ' + categoryLabel).toLowerCase();
+          const match = !term || haystack.includes(term);
+          card.classList.toggle('hidden-by-search', !match);
+        });
+      }
+
+      function applyBlockFilter() {
+        const postsCards = document.querySelectorAll('.post-card');
+        postsCards.forEach(card => {
+          const author = card.dataset.author || '';
+          const blocked = blockedUsers.has(author);
+          card.classList.toggle('hidden-by-block', blocked);
+        });
+
+        const commentItems = document.querySelectorAll('.comment-item');
+        commentItems.forEach(item => {
+          const nicknameEl = item.querySelector('.nickname');
+          const nick = nicknameEl ? nicknameEl.textContent.trim() : '';
+          const blocked = blockedUsers.has(nick);
+          item.classList.toggle('hidden-by-block', blocked);
+        });
+
+        const topBragCards = document.querySelectorAll('.top-brag-card');
+        topBragCards.forEach(card => {
+          const author = card.dataset.author || '';
+          const blocked = blockedUsers.has(author);
+          card.classList.toggle('hidden-by-block', blocked);
+        });
+      }
+
+      function renderHomeTopBrags() {
+        if (!homeTopBragList) return;
+        homeTopBragList.innerHTML = '';
+
+        const allPosts = Object.values(posts)
+          .filter(p => !p.isHit)
+          .filter(p => !blockedUsers.has(p.author || ''));
+
+        if (!allPosts.length) {
+          const p = document.createElement('p');
+          p.className = 'empty-text';
+          p.textContent = '아직 자랑글이 충분하지 않습니다.';
+          homeTopBragList.appendChild(p);
+          return;
+        }
+
+        allPosts.sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0));
+        const top3 = allPosts.slice(0, 3);
+
+        top3.forEach((post, index) => {
+          const card = document.createElement('div');
+          card.className = 'top-brag-card';
+          card.dataset.id = post.id;
+          card.dataset.author = post.author || '';
+
+          // Rank Badge
+          const rank = index + 1;
+          const badgeHtml = `<div class="rank-badge rank-${rank}">${rank}</div>`;
+
+          card.innerHTML =
+            badgeHtml
+            + '<div class="top-brag-thumb" style="background-image:url(\''
+            + (post.imageUrl || 'https://via.placeholder.com/600x380?text=BidderLive+Item')
+            + '\');"></div>'
+            + '<div class="top-brag-body">'
+            + '  <div class="top-brag-meta">'
+            + '    <span class="top-brag-category">' + (post.categoryLabel || '') + '</span>'
+            + '    <span class="top-brag-likes">♥ ' + (post.likeCount || 0) + '</span>'
+            + '  </div>'
+            + '  <div class="top-brag-title">' + (post.title || '') + '</div>'
+            + '  <div class="top-brag-author">' + (post.author || '') + '</div>'
+            + '</div>';
+          homeTopBragList.appendChild(card);
+        });
+
+        applyBlockFilter();
+      }
+
+      function renderHomeRecommendations() {
+        if (!homeRecoList) return;
+
+        homeRecoList.innerHTML = '';
+
+        if (!currentUser) {
+          if (recoUsernameSpan) {
+            recoUsernameSpan.textContent = 'OO';
+          }
+          const p = document.createElement('p');
+          p.className = 'empty-text';
+          p.textContent = '로그인하면 맞춤 추천 자랑글을 볼 수 있어요.';
+          homeRecoList.appendChild(p);
+          return;
+        }
+
+        if (recoUsernameSpan) {
+          recoUsernameSpan.textContent = currentUser.nickname;
+        }
+
+        const nick = currentUser.nickname;
+
+        const likedPosts = Object.values(posts).filter(p => p.likedByCurrentUser);
+        const ownPosts = Object.values(posts).filter(p => p.author === nick);
+
+        const basePosts = likedPosts.length ? likedPosts : ownPosts;
+        let preferredCategories = null;
+
+        if (basePosts.length) {
+          preferredCategories = Array.from(new Set(basePosts.map(p => p.category)));
+        }
+
+        let pool = Object.values(posts).filter(p => p.author !== nick);
+
+        if (preferredCategories && preferredCategories.length) {
+          pool = pool.filter(p => preferredCategories.includes(p.category));
+        }
+
+        pool = pool.filter(p => !blockedUsers.has(p.author || ''));
+
+        if (!pool.length) {
+          const p = document.createElement('p');
+          p.className = 'empty-text';
+          p.textContent = '관심 카테고리 기반 추천이 아직 없습니다. 다양한 자랑글에 좋아요를 눌러보세요!';
+          homeRecoList.appendChild(p);
+          return;
+        }
+
+        pool.sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0));
+        const picks = pool.slice(0, 3);
+
+        picks.forEach(post => {
+          const card = document.createElement('div');
+          card.className = 'top-brag-card';
+          card.dataset.id = post.id;
+          card.dataset.author = post.author || '';
+          card.innerHTML =
+            '<div class="top-brag-thumb" style="background-image:url(\''
+            + (post.imageUrl || 'https://via.placeholder.com/600x380?text=BidderLive+Item')
+            + '\');"></div>'
+            + '<div class="top-brag-body">'
+            + '  <div class="top-brag-meta">'
+            + '    <span class="top-brag-category">' + (post.categoryLabel || '') + '</span>'
+            + '    <span class="top-brag-likes">♥ ' + (post.likeCount || 0) + '</span>'
+            + '  </div>'
+            + '  <div class="top-brag-title">' + (post.title || '') + '</div>'
+            + '  <div class="top-brag-author">' + (post.author || '') + '</div>'
+            + '</div>';
+          homeRecoList.appendChild(card);
+        });
+
+        applyBlockFilter();
+      }
+
+      function getOrBuildUserProfile(nickname) {
+        if (!nickname) return null;
+        let profile = userProfiles[nickname];
+        const isDealer = isDealerNickname(nickname);
+        const isOperator = nickname === '운영자' || nickname === '관리자' || nickname.toLowerCase().includes('admin');
+
+        const postsByUser = Object.values(posts).filter(p => p.author === nickname);
+        const categoryKeys = Array.from(new Set(postsByUser.map(p => p.category))).filter(Boolean);
+        const preferredCategories = categoryKeys.map(key => CATEGORY_CONFIG[key] || key);
+
+        // Calculate total likes received
+        const totalLikes = postsByUser.reduce((sum, p) => sum + (p.likeCount || 0), 0);
+
+        if (!profile) {
+          profile = {
+            nickname,
+            isDealer,
+            isOperator,
+            preferredCategories,
+            rating: isDealer ? 4.8 : null,
+            dealerCategories: preferredCategories.slice(0, 3),
+            liveUrl: isDealer ? '#' : null,
+            bio: '',
+            followers: Math.floor(Math.random() * 500) + 10,
+            following: Math.floor(Math.random() * 100) + 5,
+            totalLikes: totalLikes,
+            badges: []
+          };
+
+          // Assign random badges
+          if (isDealer) profile.badges.push('인증 딜러');
+          if (postsByUser.length > 5) profile.badges.push('헤비 업로더');
+          if (totalLikes > 50) profile.badges.push('인기 유저');
+          if (profile.badges.length === 0) profile.badges.push('새싹 멤버');
+
+        } else {
+          profile.isDealer = isDealer;
+          profile.isOperator = isOperator;
+          profile.preferredCategories = preferredCategories;
+          profile.totalLikes = totalLikes; // Update likes as they might change
+
+          if (isDealer && !profile.rating) profile.rating = 4.8;
+          if (isDealer && (!profile.dealerCategories || !profile.dealerCategories.length)) {
+            profile.dealerCategories = preferredCategories.slice(0, 3);
+          }
+        }
+
+        if (!profile.bio) {
+          if (currentUser && currentUser.nickname === nickname) {
+            profile.bio = currentUser.role === 'seller'
+              ? '비더라이브에서 라이브와 경매를 진행하는 딜러입니다.'
+              : '비더라이브에서 낙찰템을 모으는 컬렉터입니다.';
+          } else {
+            profile.bio = isDealer
+              ? '비더라이브에서 활동하는 딜러 계정입니다.'
+              : '비더라이브 커뮤니티에서 활동 중인 사용자입니다.';
+          }
+        }
+
+        userProfiles[nickname] = profile;
+        return profile;
+      }
+
+      function openProfile(nickname) {
+        if (!nickname) return;
+        const profile = getOrBuildUserProfile(nickname);
+        if (!profile) return;
+
+        currentProfileNickname = nickname;
+
+        if (profileAvatar) {
+          profileAvatar.textContent = getAvatarInitial(nickname);
+        }
+        if (profileNickname) {
+          profileNickname.textContent = nickname;
+        }
+        if (profileRolePill) {
+          profileRolePill.textContent = profile.isDealer ? '딜러' : '컬렉터';
+        }
+        if (profileOperatorBadge) {
+          profileOperatorBadge.classList.toggle('hidden', !profile.isOperator);
+        }
+        if (profileBio) {
+          profileBio.textContent = profile.bio || '';
+        }
+
+        // NEW: Update Stats & Badges
+        if (profileStatFollowers) profileStatFollowers.textContent = profile.followers || 0;
+        if (profileStatFollowing) profileStatFollowing.textContent = profile.following || 0;
+        if (profileStatLikes) profileStatLikes.textContent = profile.totalLikes || 0;
+
+        if (profileBadges) {
+          profileBadges.innerHTML = '';
+          if (profile.badges && profile.badges.length) {
+            profile.badges.forEach(badge => {
+              const span = document.createElement('span');
+              span.className = 'profile-badge';
+              span.innerHTML = '<span>🏆</span> ' + badge;
+              profileBadges.appendChild(span);
+            });
+          } else {
+            const span = document.createElement('span');
+            span.className = 'small-helper';
+            span.textContent = '아직 획득한 배지가 없습니다.';
+            profileBadges.appendChild(span);
+          }
+        }
+
+        // Random cover image based on nickname length (pseudo-random)
+        if (profileCover) {
+          const seed = nickname.length % 5;
+          const covers = [
+            'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&w=800&q=80',
+            'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'
+          ];
+          profileCover.style.backgroundImage = `url('${covers[seed]}')`;
+        }
+
+        if (profilePreferredCategories) {
+          profilePreferredCategories.innerHTML = '';
+          if (profile.preferredCategories && profile.preferredCategories.length) {
+            profile.preferredCategories.forEach(label => {
+              const chip = document.createElement('span');
+              chip.className = 'chip';
+              chip.textContent = label;
+              profilePreferredCategories.appendChild(chip);
+            });
+          } else {
+            const span = document.createElement('span');
+            span.className = 'small-helper';
+            span.textContent = '아직 선호 카테고리가 정리되지 않았습니다.';
+            profilePreferredCategories.appendChild(span);
+          }
+        }
+
+        const isSelf = currentUser && currentUser.nickname === nickname;
+        if (!currentUser || isSelf) {
+          if (profileFollowBtn) profileFollowBtn.classList.add('hidden');
+          if (profileBlockBtn) profileBlockBtn.classList.add('hidden');
+        } else {
+          if (profileFollowBtn) {
+            profileFollowBtn.classList.remove('hidden');
+            const isDealer = profile.isDealer;
+            const followed = isDealer
+              ? followingDealers.has(nickname)
+              : followingUsers.has(nickname);
+            profileFollowBtn.textContent = followed
+              ? '팔로우 취소'
+              : isDealer
+                ? '딜러 팔로우'
+                : '사용자 팔로우';
+          }
+          if (profileBlockBtn) {
+            profileBlockBtn.classList.remove('hidden');
+            const blocked = blockedUsers.has(nickname);
+            profileBlockBtn.textContent = blocked ? '차단 해제' : '차단하기';
+          }
+        }
+
+        if (profileDealerCard) {
+          if (profile.isDealer) {
+            profileDealerCard.classList.remove('hidden');
+            if (profileDealerRating) {
+              profileDealerRating.textContent = profile.rating != null ? profile.rating : '4.8';
+            }
+            if (profileDealerCategories) {
+              profileDealerCategories.innerHTML = '';
+              if (profile.dealerCategories && profile.dealerCategories.length) {
+                profile.dealerCategories.forEach(label => {
+                  const chip = document.createElement('span');
+                  chip.className = 'chip';
+                  chip.textContent = label;
+                  profileDealerCategories.appendChild(chip);
+                });
+              }
+            }
+            if (profileLiveLink) {
+              profileLiveLink.href = profile.liveUrl || '#';
+            }
+          } else {
+            profileDealerCard.classList.add('hidden');
+          }
+        }
+
+        if (profileRecentPosts) {
+          profileRecentPosts.innerHTML = '';
+          const postsByUser = Object.values(posts)
+            .filter(p => p.author === nickname)
+            .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          if (!postsByUser.length) {
+            const p = document.createElement('p');
+            p.className = 'empty-text';
+            p.textContent = '작성한 자랑글이 없습니다.';
+            profileRecentPosts.appendChild(p);
+          } else {
+            postsByUser.slice(0, 4).forEach(post => {
+              const card = renderPostCard(post);
+              profileRecentPosts.appendChild(card);
+            });
+          }
+        }
+
+        if (profileRecentSub) {
+          profileRecentSub.textContent =
+            nickname + ' 님이 올린 최근 자랑글입니다.';
+        }
+
+        showOnlySection('profile-section');
+        activateNavFor('profile-section');
+        applyBlockFilter();
+        applySearchFilter();
+      }
+
+      function openReportModal(target) {
+        reportTarget = target;
+        if (!reportModal) return;
+        if (reportTargetText) {
+          if (!target) {
+            reportTargetText.textContent = '';
+          } else {
+            const label = target.type === 'comment' ? '댓글' : '게시글';
+            let text = label;
+            if (target.nickname) {
+              text += ' · 작성자 ' + target.nickname;
+            }
+            if (target.postId) {
+              text += ' · ID: ' + target.postId;
+            }
+            reportTargetText.textContent = text;
+          }
+        }
+        reportModal.classList.remove('hidden');
+      }
+
+      function closeReportModal() {
+        if (!reportModal) return;
+        reportModal.classList.add('hidden');
+        reportTarget = null;
+      }
+
+      function mountInitialPosts() {
+        TEST_POSTS.forEach(data => {
+          const post = createPostFromData(data, false);
+          const card = renderPostCard(post);
+          feedList.appendChild(card);
+        });
+        applySort();
+        applyCategoryFilter();
+        applyBlockFilter();
+        applySearchFilter();
+        renderHomeTopBrags();
+        renderHomeRecommendations();
+      }
+
+      function refreshOwnerToolsForAllCards() {
+        const cards = document.querySelectorAll('.post-card');
+        cards.forEach(card => {
+          const author = card.dataset.author || '';
+          const ownerTools = card.querySelector('.owner-tools');
+          const isOwner = currentUser && author === currentUser.nickname;
+
+          if (ownerTools && !isOwner) {
+            ownerTools.remove();
+          } else if (!ownerTools && isOwner) {
+            const tools = document.createElement('div');
+            tools.className = 'owner-tools';
+            tools.innerHTML =
+              '<span class="owner-pill">MY</span>'
+              + '<button type="button" class="text-btn edit-post-btn">수정</button>'
+              + '<button type="button" class="text-btn delete-post-btn">삭제</button>';
+            const body = card.querySelector('.post-body');
+            body.appendChild(tools);
+          }
+        });
+
+        if (currentPostId && posts[currentPostId]) {
+          const post = posts[currentPostId];
+          const isOwner = currentUser && post.author === currentUser.nickname;
+          detailEditBtn.classList.toggle('hidden', !isOwner);
+          detailDeleteBtn.classList.toggle('hidden', !isOwner);
+        } else {
+          detailEditBtn.classList.add('hidden');
+          detailDeleteBtn.classList.add('hidden');
+        }
+      }
+
+      function toggleLikeForPost(postId) {
+        const post = posts[postId];
+        if (!post) return;
+
+        const newState = !post.likedByCurrentUser;
+        post.likedByCurrentUser = newState;
+        post.likeCount = Math.max(0, (post.likeCount || 0) + (newState ? 1 : -1));
+
+        const mainCard = document.querySelector('#feed-list .post-card[data-id="' + postId + '"]');
+        if (mainCard) {
+          const likeBtn = mainCard.querySelector('.like-btn');
+          if (likeBtn) {
+            likeBtn.setAttribute('data-liked', newState ? 'true' : 'false');
+            const icon = likeBtn.querySelector('.like-icon');
+            const countSpan = likeBtn.querySelector('.like-count');
+            if (icon) icon.textContent = newState ? '♥' : '♡';
+            if (countSpan) countSpan.textContent = post.likeCount;
+          }
+        }
+
+        const collectionLikeBtns = document.querySelectorAll('#my-collection-section .post-card[data-id="' + postId + '"] .like-btn');
+        collectionLikeBtns.forEach(btn => {
+          btn.setAttribute('data-liked', newState ? 'true' : 'false');
+          const icon = btn.querySelector('.like-icon');
+          const countSpan = btn.querySelector('.like-count');
+          if (icon) icon.textContent = newState ? '♥' : '♡';
+          if (countSpan) countSpan.textContent = post.likeCount;
+        });
+
+        if (detailLikeBtn && currentPostId === postId) {
+          detailLikeBtn.setAttribute('data-liked', newState ? 'true' : 'false');
+          const icon = detailLikeBtn.querySelector('.like-icon');
+          const countSpan = detailLikeBtn.querySelector('.like-count');
+          if (icon) icon.textContent = newState ? '♥' : '♡';
+          if (countSpan) countSpan.textContent = post.likeCount;
+        }
+
+        applySort();
+        renderHomeTopBrags();
+        renderHomeRecommendations();
+      }
+
+      function openDetail(postId) {
+        const post = posts[postId];
+        if (!post) return;
+
+        currentPostId = postId;
+
+        const image = post.imageUrl || '';
+        detailImage.style.backgroundImage = image ? "url('" + image + "')" : '';
+
+        detailCategory.textContent = post.categoryLabel || '카테고리';
+        detailHitBadge.classList.toggle('hidden', !post.isHit);
+        detailTitle.textContent = post.title || '';
+        detailDesc.textContent = post.oneLiner || '';
+        detailBody.textContent = post.body || '';
+
+        const avatarInitial = getAvatarInitial(post.author);
+        detailAvatar.textContent = avatarInitial;
+        detailNickname.textContent = post.author || '';
+
+        const isDealer = isDealerNickname(post.author);
+        const userTypeLabel = isDealer ? '딜러' : '컬렉터';
+        detailSubtext.textContent = post.categoryLabel + ' · ' + userTypeLabel;
+
+        if (detailUserInline) {
+          detailUserInline.dataset.nickname = post.author || '';
+        }
+
+        detailLikeBtn.setAttribute('data-liked', post.likedByCurrentUser ? 'true' : 'false');
+        detailLikeBtn.querySelector('.like-icon').textContent = post.likedByCurrentUser ? '♥' : '♡';
+        detailLikeBtn.querySelector('.like-count').textContent = post.likeCount || 0;
+
+        renderComments();
+
+        const isOwner = currentUser && post.author === currentUser.nickname;
+        detailEditBtn.classList.toggle('hidden', !isOwner);
+        detailDeleteBtn.classList.toggle('hidden', !isOwner);
+
+        showOnlySection('detail-section');
+        activateNavFor('feed-section');
+      }
+
+      function renderComments() {
+        commentList.innerHTML = '';
+        if (!currentPostId) {
+          const li = document.createElement('li');
+          li.className = 'comment-empty';
+          li.textContent = '게시글을 선택하면 댓글을 볼 수 있습니다.';
+          commentList.appendChild(li);
+          return;
+        }
+
+        const comments = commentsByPostId[currentPostId] || [];
+        if (!comments.length) {
+          const li = document.createElement('li');
+          li.className = 'comment-empty';
+          li.textContent = '첫 댓글을 남겨보세요.';
+          commentList.appendChild(li);
+          return;
+        }
+
+        comments.forEach(c => {
+          const li = document.createElement('li');
+          li.className = 'comment-item';
+          li.innerHTML =
+            '<div class="comment-header">'
+            + '<span class="nickname">' + c.nickname + '</span>'
+            + '<span class="date">' + c.when + '</span>'
+            + '</div>'
+            + '<p class="comment-body">' + c.text + '</p>'
+            + '<button type="button" class="text-btn report-comment-btn">신고</button>';
+          commentList.appendChild(li);
+        });
+
+        applyBlockFilter();
+      }
+
+      function searchPostByCategoryAndId() {
+        if (!categoryIdInput) return;
+        const category = categoryIdSelect ? (categoryIdSelect.value || '').trim() : '';
+        const raw = categoryIdInput.value.trim();
+        if (!raw) {
+          alert('아이디를 입력해 주세요.');
+          return;
+        }
+
+        let targetId = raw;
+        if (!raw.includes('-') && category) {
+          targetId = category + '-' + raw;
+        }
+
+        const post = posts[targetId];
+        if (!post) {
+          alert('해당 아이디의 게시글을 찾을 수 없습니다. (예: arttoy-1)');
+          return;
+        }
+
+        openDetail(targetId);
+      }
+
+      function renderMyCollections() {
+        if (!currentUser) return;
+        const nick = currentUser.nickname;
+
+        myPostsContainer.innerHTML = '';
+        likedPostsContainer.innerHTML = '';
+
+        let myCount = 0;
+        let likedCount = 0;
+
+        Object.keys(posts).forEach(id => {
+          const post = posts[id];
+          if (post.author === nick) {
+            const card = renderPostCard(post);
+            myPostsContainer.appendChild(card);
+            myCount++;
+          }
+          if (post.likedByCurrentUser) {
+            const card = renderPostCard(post);
+            likedPostsContainer.appendChild(card);
+            likedCount++;
+          }
+        });
+
+        if (myCount === 0) {
+          const p = document.createElement('p');
+          p.className = 'empty-text';
+          p.textContent = '아직 올린 자랑글이 없습니다. 첫 글을 올려보세요!';
+          myPostsContainer.appendChild(p);
+        }
+
+        if (likedCount === 0) {
+          const p = document.createElement('p');
+          p.className = 'empty-text';
+          p.textContent = '좋아요한 글이 여기에 모입니다.';
+          likedPostsContainer.appendChild(p);
+        }
+
+        refreshOwnerToolsForAllCards();
+        applySearchFilter();
+        applyBlockFilter();
+      }
+
+      function startEditPost(postId) {
+        const post = posts[postId];
+        if (!post) return;
+        if (!currentUser) {
+          alert('로그인 후 이용해 주세요.');
+          return;
+        }
+        if (post.author !== currentUser.nickname) {
+          alert('본인이 올린 글만 수정할 수 있습니다.');
+          return;
+        }
+
+        editingPostId = postId;
+        submitPostBtn.textContent = '수정 완료';
+
+        newCategorySelect.value = post.category;
+        newTitleInput.value = post.title || '';
+        newDescInput.value = post.oneLiner || '';
+        newBodyInput.value = post.body || '';
+        newImageInput.value = '';
+
+        // NEW: Show existing image in preview
+        if (post.imageUrl) {
+          imagePreview.src = post.imageUrl;
+          previewContainer.classList.remove('hidden');
+        } else {
+          previewContainer.classList.add('hidden');
+          imagePreview.src = '';
+        }
+
+        showOnlySection('new-post-section');
+        activateNavFor('new-post-section');
+      }
+
+      function deletePost(postId) {
+        const post = posts[postId];
+        if (!post) return;
+        if (!currentUser) {
+          alert('로그인 후 이용해 주세요.');
+          return;
+        }
+        if (post.author !== currentUser.nickname) {
+          alert('본인이 올린 글만 삭제할 수 있습니다.');
+          return;
+        }
+
+        if (!confirm('정말 이 자랑글을 삭제하시겠습니까?')) return;
+
+        delete posts[postId];
+        delete commentsByPostId[postId];
+
+        const mainCard = document.querySelector('#feed-list .post-card[data-id="' + postId + '"]');
+        if (mainCard) mainCard.remove();
+
+        if (currentPostId === postId) {
+          currentPostId = null;
+          showOnlySection('feed-section');
+          activateNavFor('feed-section');
+        }
+
+        if (editingPostId === postId) {
+          editingPostId = null;
+          newPostForm.reset();
+          submitPostBtn.textContent = '커뮤니티에 올리기';
+          // NEW: Reset preview
+          previewContainer.classList.add('hidden');
+          imagePreview.src = '';
+        }
+
+        if (!document.getElementById('my-collection-section').classList.contains('hidden')) {
+          renderMyCollections();
+        }
+
+        applySearchFilter();
+        renderHomeTopBrags();
+        renderHomeRecommendations();
+      }
+
+      function setActiveFeedTab(tab) {
+        currentHitFilter = tab;
+        if (feedTabButtons && feedTabButtons.length) {
+          feedTabButtons.forEach(b => {
+            const val = b.dataset.feedTab || 'all';
+            b.classList.toggle('active', val === tab);
+          });
+        }
+        applyHitFilter();
+        applySort();
+        applySearchFilter();
+        applyBlockFilter();
+      }
+
+      // 로그인 처리
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const emailInput = document.getElementById('login-email');
+        const passwordInput = document.getElementById('login-password');
+        const nicknameField = nicknameInput;
+
+        if (!emailInput.value.trim()) {
+          emailInput.value = 'gsss@ddd.com';
+        }
+        if (!passwordInput.value.trim()) {
+          passwordInput.value = '1111';
+        }
+        if (!nicknameField.value.trim()) {
+          nicknameField.value = 'ㅇㅇㅇ';
+        }
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        const nickname = nicknameField.value.trim();
+        const role = document.querySelector('input[name="role"]:checked')?.value || 'buyer';
+
+        currentUser = {
+          email,
+          nickname,
+          role
+        };
+
+        nicknameLabels.forEach(span => {
+          span.textContent = nickname;
+        });
+
+        roleLabel.textContent = role === 'seller'
+          ? '판매자(딜러)'
+          : '구매자(컬렉터)';
+
+        hitShareBtn.classList.toggle('hidden', role !== 'seller');
+
+        commentInput.placeholder =
+          nickname + ' 님의 닉네임으로 댓글이 등록됩니다.';
+
+        loginPage.classList.add('hidden');
+        app.classList.remove('hidden');
+
+        refreshOwnerToolsForAllCards();
+        renderHomeRecommendations();
+      });
+
+      // 상단 네비게이션
+      navLinks.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const target = btn.dataset.target;
+          if (!target) return;
+
+          if (target === 'profile-section') {
+            if (!currentUser) {
+              alert('로그인 후 이용해 주세요.');
+              return;
+            }
+            openProfile(currentUser.nickname);
+            return;
+          }
+
+          showOnlySection(target);
+          activateNavFor(target);
+          if (target === 'my-collection-section') {
+            renderMyCollections();
+          } else if (target === 'new-post-section') {
+            newPostMode = 'brag';
+          }
+        });
+      });
+
+      // 홈에서 섹션 점프
+      document.addEventListener('click', function (e) {
+        const jumpBtn = e.target.closest('[data-jump]');
+        if (jumpBtn) {
+          const target = jumpBtn.getAttribute('data-jump');
+          if (target) {
+            showOnlySection(target);
+            activateNavFor(target);
+            if (target === 'my-collection-section') {
+              renderMyCollections();
+            }
+          }
+        }
+      });
+
+      // 상단 검색
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          applySearchFilter();
+        });
+      }
+
+      // 카테고리 + 아이디 검색
+      if (categoryIdSearchBtn) {
+        categoryIdSearchBtn.addEventListener('click', function (e) {
+          e.preventDefault();
+          searchPostByCategoryAndId();
+        });
+      }
+
+      if (categoryIdInput) {
+        categoryIdInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            searchPostByCategoryAndId();
+          }
+        });
+      }
+
+      // 카테고리 필터
+      categoryChips.forEach(chip => {
+        chip.addEventListener('click', function () {
+          const category = chip.dataset.category || 'all';
+          currentCategoryFilter = category;
+          categoryChips.forEach(c =>
+            c.classList.toggle('active', c === chip)
+          );
+          applyCategoryFilter();
+          applySearchFilter();
+        });
+      });
+
+      // 피드 탭 (전체 / 자랑 / HIT 공유 / 팔로우 딜러)
+      if (feedTabButtons && feedTabButtons.length) {
+        feedTabButtons.forEach(btn => {
+          btn.addEventListener('click', function () {
+            const tab = btn.dataset.feedTab || 'all';
+            setActiveFeedTab(tab);
+          });
+        });
+      }
+
+      // 정렬 드롭다운
+      if (feedSortSelect) {
+        feedSortSelect.addEventListener('change', function () {
+          const value = feedSortSelect.value;
+          if (value === 'hitOnly') {
+            setActiveFeedTab('hit');
+          } else {
+            currentSort = value || 'latest';
+            applySort();
+            applySearchFilter();
+            applyBlockFilter();
+          }
+        });
+      }
+
+      // 신고 모달 버튼
+      if (reportCancelBtn) {
+        reportCancelBtn.addEventListener('click', function () {
+          closeReportModal();
+        });
+      }
+
+      if (reportSubmitBtn) {
+        reportSubmitBtn.addEventListener('click', function () {
+          if (!reportModal) return;
+          const checked = reportModal.querySelector('input[name="report-reason"]:checked');
+          const reason = checked ? checked.value : '';
+          closeReportModal();
+          if (reason) {
+            alert('신고가 접수되었습니다. (사유: ' + reason + ')');
+          } else {
+            alert('신고가 접수되었습니다.');
+          }
+        });
+      }
+
+      if (reportModal) {
+        reportModal.addEventListener('click', function (e) {
+          if (e.target === reportModal) {
+            closeReportModal();
+          }
+        });
+      }
+
+      // 프로필 팔로우 / 차단 버튼
+      if (profileFollowBtn) {
+        profileFollowBtn.addEventListener('click', function () {
+          if (!currentUser || !currentProfileNickname) {
+            alert('로그인 후 이용해 주세요.');
+            return;
+          }
+          if (currentUser.nickname === currentProfileNickname) return;
+
+          const isDealer = isDealerNickname(currentProfileNickname);
+          let followed = false;
+          if (isDealer) {
+            followed = followingDealers.has(currentProfileNickname);
+            if (followed) {
+              followingDealers.delete(currentProfileNickname);
+            } else {
+              followingDealers.add(currentProfileNickname);
+            }
+          } else {
+            followed = followingUsers.has(currentProfileNickname);
+            if (followed) {
+              followingUsers.delete(currentProfileNickname);
+            } else {
+              followingUsers.add(currentProfileNickname);
+            }
+          }
+
+          const nowFollowed = isDealer
+            ? followingDealers.has(currentProfileNickname)
+            : followingUsers.has(currentProfileNickname);
+          profileFollowBtn.textContent = nowFollowed
+            ? '팔로우 취소'
+            : isDealer
+              ? '딜러 팔로우'
+              : '사용자 팔로우';
+
+          applyHitFilter();
+          applySearchFilter();
+        });
+      }
+
+      if (profileBlockBtn) {
+        profileBlockBtn.addEventListener('click', function () {
+          if (!currentUser || !currentProfileNickname) {
+            alert('로그인 후 이용해 주세요.');
+            return;
+          }
+          if (currentUser.nickname === currentProfileNickname) return;
+
+          const blocked = blockedUsers.has(currentProfileNickname);
+          if (blocked) {
+            blockedUsers.delete(currentProfileNickname);
+          } else {
+            blockedUsers.add(currentProfileNickname);
+          }
+
+          profileBlockBtn.textContent = blocked
+            ? '차단하기'
+            : '차단 해제';
+
+          applyBlockFilter();
+          renderHomeTopBrags();
+          renderHomeRecommendations();
+        });
+      }
+
+      // 고정 공지 → 규칙 보러가기
+      if (pinnedDetailBtn) {
+        pinnedDetailBtn.addEventListener('click', function () {
+          showOnlySection('home-section');
+          activateNavFor('home-section');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // 전역 클릭 이벤트 (좋아요, 상세, 수정, 삭제, 프로필, 신고, TOP 카드)
+      document.addEventListener('click', function (e) {
+        const likeBtn = e.target.closest('.like-btn');
+        if (likeBtn) {
+          if (likeBtn === detailLikeBtn) {
+            if (currentPostId) {
+              toggleLikeForPost(currentPostId);
+            }
+          } else {
+            const card = likeBtn.closest('.post-card');
+            if (card) {
+              const postId = card.dataset.id;
+              toggleLikeForPost(postId);
+            }
+          }
+          return;
+        }
+
+        const detailBtn = e.target.closest('.open-detail-btn');
+        if (detailBtn) {
+          const card = detailBtn.closest('.post-card');
+          if (card) {
+            const postId = card.dataset.id;
+            openDetail(postId);
+          }
+          return;
+        }
+
+        const editBtn = e.target.closest('.edit-post-btn');
+        if (editBtn) {
+          let postId = null;
+          const card = editBtn.closest('.post-card');
+          if (card) {
+            postId = card.dataset.id;
+          } else if (currentPostId) {
+            postId = currentPostId;
+          }
+          if (postId) startEditPost(postId);
+          return;
+        }
+
+        const deleteBtn = e.target.closest('.delete-post-btn');
+        if (deleteBtn) {
+          let postId = null;
+          const card = deleteBtn.closest('.post-card');
+          if (card) {
+            postId = card.dataset.id;
+          } else if (currentPostId) {
+            postId = currentPostId;
+          }
+          if (postId) deletePost(postId);
+          return;
+        }
+
+        const profileLinkEl = e.target.closest('.profile-link');
+        if (profileLinkEl) {
+          const nickname = profileLinkEl.dataset.nickname
+            || profileLinkEl.querySelector('.nickname')?.textContent.trim();
+          if (nickname) {
+            openProfile(nickname);
+          }
+          return;
+        }
+
+        const topBragCard = e.target.closest('.top-brag-card');
+        if (topBragCard) {
+          const postId = topBragCard.dataset.id;
+          if (postId) {
+            openDetail(postId);
+          }
+          return;
+        }
+
+        const reportPostBtn = e.target.closest('.report-post-btn');
+        if (reportPostBtn) {
+          let postId = null;
+          let nickname = null;
+          const card = reportPostBtn.closest('.post-card');
+          if (card) {
+            postId = card.dataset.id;
+            nickname = card.dataset.author || '';
+          } else if (currentPostId) {
+            postId = currentPostId;
+            if (posts[currentPostId]) {
+              nickname = posts[currentPostId].author || '';
+            }
+          }
+          openReportModal({
+            type: 'post',
+            postId,
+            nickname
+          });
+          return;
+        }
+
+        const reportCommentBtn = e.target.closest('.report-comment-btn');
+        if (reportCommentBtn) {
+          const item = reportCommentBtn.closest('.comment-item');
+          if (item) {
+            const nicknameEl = item.querySelector('.nickname');
+            const nick = nicknameEl ? nicknameEl.textContent.trim() : '';
+            openReportModal({
+              type: 'comment',
+              nickname: nick
+            });
+          }
+          return;
+        }
+      });
+
+      // 상세 → 뒤로
+      backToFeedBtn.addEventListener('click', function () {
+        showOnlySection('feed-section');
+        activateNavFor('feed-section');
+      });
+
+      // 댓글 등록
+      commentForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!currentUser) {
+          alert('로그인 후 댓글을 작성할 수 있습니다.');
+          return;
+        }
+        if (!currentPostId) {
+          alert('댓글을 달 게시글이 선택되지 않았습니다.');
+          return;
+        }
+        const text = commentInput.value.trim();
+        if (!text) return;
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hour = String(now.getHours()).padStart(2, '0');
+        const minute = String(now.getMinutes()).padStart(2, '0');
+        const when = year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+
+        const list = commentsByPostId[currentPostId] ||
+          (commentsByPostId[currentPostId] = []);
+        list.push({
+          nickname: currentUser.nickname,
+          text,
+          when
+        });
+
+        commentInput.value = '';
+
+        if (posts[currentPostId]) {
+          posts[currentPostId].commentCount = (posts[currentPostId].commentCount || 0) + 1;
+          const mainCard = document.querySelector('#feed-list .post-card[data-id="' + currentPostId + '"]');
+          if (mainCard) {
+            const btn = mainCard.querySelector('.open-detail-btn');
+            if (btn) {
+              btn.textContent = '💬 ' + posts[currentPostId].commentCount;
+            }
+          }
+        }
+
+        renderComments();
+        applySort();
+      });
+
+      // Image Preview Listener
+      if (newImageInput) {
+        newImageInput.addEventListener('change', function () {
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              imagePreview.src = e.target.result;
+              previewContainer.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+          } else {
+            if (editingPostId && posts[editingPostId] && posts[editingPostId].imageUrl) {
+              imagePreview.src = posts[editingPostId].imageUrl;
+              previewContainer.classList.remove('hidden');
+            } else {
+              previewContainer.classList.add('hidden');
+              imagePreview.src = '';
+            }
+          }
+        });
+      }
+
+      // 자랑 글쓰기 (등록 & 수정)
+      newPostForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!currentUser) {
+          alert('로그인 후 이용해 주세요.');
+          return;
+        }
+
+        const category = newCategorySelect.value;
+        const title = newTitleInput.value.trim();
+        const oneLiner = newDescInput.value.trim();
+        const body = newBodyInput.value.trim();
+        const file = newImageInput.files[0];
+
+        if (!title || !oneLiner) {
+          alert('제목과 한 줄 자랑을 모두 입력해 주세요.');
+          return;
+        }
+
+        const finalize = function (imageUrl) {
+          if (editingPostId) {
+            const post = posts[editingPostId];
+            if (!post) return;
+
+            post.category = category;
+            post.categoryLabel = CATEGORY_CONFIG[category] || '기타';
+            post.title = title;
+            post.oneLiner = oneLiner;
+            post.body = body;
+            if (imageUrl) {
+              post.imageUrl = imageUrl;
+            }
+
+            const mainCard = document.querySelector('#feed-list .post-card[data-id="' + editingPostId + '"]');
+            if (mainCard) {
+              mainCard.dataset.category = post.category;
+              mainCard.dataset.categoryLabel = post.categoryLabel;
+              mainCard.dataset.oneLiner = post.oneLiner;
+              mainCard.dataset.body = post.body;
+              mainCard.dataset.image = post.imageUrl || '';
+
+              const imgEl = mainCard.querySelector('.post-image');
+              if (imgEl) imgEl.style.backgroundImage = 'url(\'' + (post.imageUrl || '') + '\')';
+
+              const titleEl = mainCard.querySelector('.post-title');
+              if (titleEl) titleEl.textContent = post.title;
+
+              const descEl = mainCard.querySelector('.post-desc');
+              if (descEl) {
+                const descText = post.body
+                  ? post.oneLiner + ' · ' + (post.body.length > 40 ? post.body.substring(0, 40) + '…' : post.body)
+                  : post.oneLiner;
+                descEl.textContent = descText;
+              }
+
+              const catPill = mainCard.querySelector('.category-pill');
+              if (catPill) catPill.textContent = post.categoryLabel;
+            }
+
+            if (currentPostId === editingPostId) {
+              openDetail(editingPostId);
+            }
+          } else {
+            const newPost = {
+              id: 'new-' + Date.now(),
+              category: category,
+              title: title,
+              oneLiner: oneLiner,
+              body: body,
+              imageUrl: imageUrl,
+              author: currentUser.nickname,
+              likeCount: 0,
+              commentCount: 0,
+              isHit: false,
+              createdAt: Date.now()
+            };
+            createPostFromData(newPost, true);
+            const card = renderPostCard(posts[newPost.id]);
+            feedList.insertBefore(card, feedList.firstChild);
+
+            if (currentProfileNickname === currentUser.nickname) {
+              openProfile(currentUser.nickname);
+            }
+          }
+
+          newPostForm.reset();
+          editingPostId = null;
+          submitPostBtn.textContent = '커뮤니티에 올리기';
+
+          previewContainer.classList.add('hidden');
+          imagePreview.src = '';
+
+          showOnlySection('feed-section');
+          activateNavFor('feed-section');
+        };
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            finalize(e.target.result);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          let imgUrl = null;
+          if (editingPostId && posts[editingPostId]) {
+            imgUrl = posts[editingPostId].imageUrl;
+          }
+          finalize(imgUrl);
+        }
+      });
+
+      // Initial mount
+      mountInitialPosts();
+
+    });
+  </script>
+  <script>
+  (function() {
+      if (window.self === window.top) return;
+      document.addEventListener('DOMContentLoaded', function() {
+          var loginPage = document.getElementById('login-page');
+          var app = document.getElementById('app');
+          if (loginPage) loginPage.classList.add('hidden');
+          if (app) app.classList.remove('hidden');
+          window.addEventListener('message', function(e) {
+              if (e.data && e.data.type === 'USER_AUTH' && e.data.user) {
+                  var nicknameEl = document.querySelector('.current-nickname');
+                  var roleEl = document.getElementById('current-role-label');
+                  if (nicknameEl) nicknameEl.textContent = e.data.user.nickname || '닉네임';
+                  if (roleEl) roleEl.textContent = (e.data.user.role === 'seller' ? '딜러' : '컬렉터');
+              }
+          });
+          window.parent.postMessage({ type: 'REQUEST_USER_AUTH' }, '*');
+      });
+  })();
+  </script>
+</body>
+
+</html>

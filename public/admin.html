@@ -1,0 +1,2710 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>비더라이브 커뮤니티 Admin Console</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        :root {
+            --bg: #05070d;
+            --bg-soft: #0b1020;
+            --card: #111827;
+            --card-soft: #1f2937;
+            --border: #1f2933;
+            --accent: #ff3b69;
+            --accent-soft: rgba(255, 59, 105, 0.12);
+            --accent-strong: #ff4f7a;
+            --text-main: #f9fafb;
+            --text-sub: #9ca3af;
+            --chip-bg: #111827;
+            --chip-active: #f9fafb;
+            --chip-active-bg: #ff3b69;
+            --radius-lg: 16px;
+            --radius-md: 999px;
+            --shadow-soft: 0 18px 35px rgba(0, 0, 0, 0.65);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: radial-gradient(circle at top, #111827 0, #020308 55%);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* 로그인 페이지 */
+        #login-page.page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: radial-gradient(circle at top left, #1f2937, #020308 65%);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            padding: 32px 28px 28px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            margin-bottom: 10px;
+        }
+
+        .auth-card h1 {
+            margin: 0 0 4px;
+            font-size: 24px;
+            letter-spacing: 0.04em;
+        }
+
+        .auth-card .subtitle {
+            margin: 4px 0 24px;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: var(--text-sub);
+        }
+
+        label span.label-text {
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.95);
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(255, 59, 105, 0.4);
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0 0 14px;
+        }
+
+        fieldset legend {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+
+        .role-row {
+            display: flex;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .role-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.8);
+            background: rgba(15, 23, 42, 0.8);
+            cursor: pointer;
+            margin: 0;
+            color: var(--text-sub);
+        }
+
+        .role-row input[type="radio"] {
+            accent-color: var(--accent);
+        }
+
+        .primary-btn,
+        .secondary-btn,
+        .text-btn,
+        .icon-btn {
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 16px;
+            font-weight: 500;
+            transition: all 0.18s ease;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #0b0b10;
+            box-shadow: 0 12px 25px rgba(255, 59, 105, 0.35);
+        }
+
+        .primary-btn.full-width {
+            width: 100%;
+        }
+
+        .primary-btn.small {
+            padding: 5px 12px;
+            font-size: 12px;
+            box-shadow: 0 8px 18px rgba(255, 59, 105, 0.30);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 32px rgba(255, 59, 105, 0.45);
+        }
+
+        .secondary-btn {
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text-main);
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            padding-inline: 14px;
+            font-size: 13px;
+        }
+
+        .secondary-btn.small {
+            padding: 4px 10px;
+            font-size: 11px;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(31, 41, 55, 0.95);
+        }
+
+        .text-btn {
+            background: transparent;
+            color: var(--text-sub);
+            padding-inline: 0;
+            font-size: 12px;
+        }
+
+        .text-btn:hover {
+            color: var(--accent-strong);
+        }
+
+        .icon-btn {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            font-size: 12px;
+            padding: 4px 9px;
+            color: var(--text-sub);
+            white-space: nowrap;
+        }
+
+        .icon-btn.small {
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+
+        .icon-btn:hover {
+            border-color: rgba(148, 163, 184, 0.9);
+            color: var(--text-main);
+        }
+
+        .auth-footer {
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-sub);
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .small-helper {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        /* 앱 레이아웃 */
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 18px;
+            backdrop-filter: blur(20px);
+            background: linear-gradient(to right, rgba(3, 7, 18, 0.85), rgba(15, 23, 42, 0.8));
+            border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+        }
+
+        .logo-and-nav {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+        }
+
+        .logo span:first-child {
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            margin-right: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .logo span:last-child {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 7px 13px;
+            background: transparent;
+            color: rgba(209, 213, 219, 0.9);
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link.active {
+            background: rgba(15, 23, 42, 0.96);
+            color: var(--chip-active);
+            border-color: rgba(148, 163, 184, 0.9);
+        }
+
+        .nav-link:hover:not(.active) {
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 360px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            width: 100%;
+            font-size: 13px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--text-main);
+        }
+
+        .search-bar input::placeholder {
+            color: #6b7280;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(255, 59, 105, 0.4);
+            background: rgba(15, 23, 42, 0.98);
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .user-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .nickname-label {
+            font-size: 13px;
+        }
+
+        .role-label {
+            font-size: 11px;
+            color: var(--text-sub);
+            padding: 2px 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        main {
+            max-width: 1100px;
+            width: 100%;
+            margin: 14px auto 40px;
+            padding-inline: 16px;
+            flex: 1;
+        }
+
+        .page-section {
+            margin-top: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .section-subtitle {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-sub);
+        }
+
+        /* 통계 카드, 타일, 테이블 */
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: radial-gradient(circle at top left, #111827, #020308 70%);
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            padding: 10px 14px 11px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: minmax(0, 1.8fr) minmax(0, 2fr);
+            gap: 16px;
+        }
+
+        .tile {
+            background: radial-gradient(circle at top left, #020617, #020308 80%);
+            border-radius: 18px;
+            border: 1px solid rgba(31, 41, 55, 0.9);
+            padding: 14px 14px 12px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
+        }
+
+        .tile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .tile-title {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .tile-sub {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin: 2px 0 0;
+        }
+
+        .small-link {
+            font-size: 11px;
+            color: var(--accent-strong);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .filter-row {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-row select,
+        .filter-row input {
+            font-size: 13px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text-main);
+            min-width: 120px;
+        }
+
+        .filter-row input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-row select:focus,
+        .filter-row input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(255, 59, 105, 0.4);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 7px 8px;
+            border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .data-table th {
+            font-size: 12px;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-main-text {
+            font-size: 13px;
+        }
+
+        .table-sub-text {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        .ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 260px;
+        }
+
+        .table-actions {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        /* 광고 배너 폼 */
+        .ads-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: flex-end;
+        }
+
+        .ads-form-grid .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+        }
+
+        .ads-form-actions {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+            justify-content: flex-start;
+            margin-top: 4px;
+        }
+
+        /* 뱃지 */
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            gap: 4px;
+        }
+
+        .badge-outline {
+            border-color: rgba(148, 163, 184, 0.8);
+            background: transparent;
+            color: #e5e7eb;
+        }
+
+        .badge-outline.small {
+            font-size: 10px;
+            padding: 2px 6px;
+        }
+
+        .badge-status-visible {
+            background: rgba(34, 197, 94, 0.14);
+            border-color: rgba(34, 197, 94, 0.8);
+            color: #bbf7d0;
+        }
+
+        .badge-status-hidden {
+            background: rgba(248, 113, 113, 0.14);
+            border-color: rgba(248, 113, 113, 0.8);
+            color: #fecaca;
+        }
+
+        .badge-status-normal {
+            background: rgba(59, 130, 246, 0.14);
+            border-color: rgba(59, 130, 246, 0.8);
+            color: #bfdbfe;
+        }
+
+        .badge-status-blocked {
+            background: rgba(248, 113, 113, 0.14);
+            border-color: rgba(248, 113, 113, 0.85);
+            color: #fecaca;
+        }
+
+        .badge-status-on {
+            background: rgba(34, 197, 94, 0.14);
+            border-color: rgba(34, 197, 94, 0.85);
+            color: #bbf7d0;
+        }
+
+        .badge-status-off {
+            background: rgba(75, 85, 99, 0.25);
+            border-color: rgba(75, 85, 99, 0.9);
+            color: #e5e7eb;
+        }
+
+        .badge-status-pending {
+            background: rgba(251, 191, 36, 0.14);
+            border-color: rgba(251, 191, 36, 0.85);
+            color: #facc15;
+        }
+
+        .badge-status-in_progress {
+            background: rgba(96, 165, 250, 0.14);
+            border-color: rgba(96, 165, 250, 0.9);
+            color: #bfdbfe;
+        }
+
+        .badge-status-resolved {
+            background: rgba(34, 197, 94, 0.14);
+            border-color: rgba(34, 197, 94, 0.85);
+            color: #bbf7d0;
+        }
+
+        /* 시스템 로그 */
+
+        .log-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+            max-height: 260px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .log-item {
+            display: flex;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(31, 41, 55, 0.85);
+        }
+
+        .log-time {
+            color: var(--text-sub);
+            width: 40px;
+            flex-shrink: 0;
+        }
+
+        .log-message {
+            flex: 1;
+        }
+
+        .log-empty {
+            color: var(--text-sub);
+            padding: 6px 0;
+        }
+
+        /* 반응형 */
+
+        @media (max-width: 960px) {
+            .two-column {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 720px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .logo-and-nav {
+                justify-content: space-between;
+            }
+
+            .search-bar {
+                max-width: none;
+            }
+
+            main {
+                padding-inline: 10px;
+            }
+
+            .auth-card {
+                padding: 24px 18px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-area {
+                justify-content: space-between;
+            }
+
+            .stat-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-enter {
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-4 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-5 {
+            animation-delay: 0.5s;
+        }
+
+        /* Report Alerts */
+        @keyframes blink-bg {
+            0% {
+                background-color: rgba(239, 68, 68, 0.15);
+            }
+
+            50% {
+                background-color: rgba(239, 68, 68, 0.4);
+            }
+
+            100% {
+                background-color: rgba(239, 68, 68, 0.15);
+            }
+        }
+
+        .alert-yellow {
+            background-color: rgba(234, 179, 8, 0.15);
+            border-left: 3px solid #eab308;
+        }
+
+        .alert-orange {
+            background-color: rgba(249, 115, 22, 0.2);
+            border-left: 3px solid #f97316;
+        }
+
+        .alert-red {
+            border-left: 3px solid #ef4444;
+            animation: blink-bg 1.5s infinite;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1f2937;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .modal-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .modal-value {
+            font-size: 14px;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        textarea.modal-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--text-main);
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 운영자 로그인 페이지 -->
+    <section id="login-page" class="page">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <span>BidderLive</span>
+                <span style="opacity:.7;">Community · Admin</span>
+            </div>
+            <h1>운영자 콘솔 로그인</h1>
+            <p class="subtitle">
+                비더라이브 커뮤니티 <strong>운영자/스태프 전용</strong> 관리자 페이지입니다.
+            </p>
+
+            <form id="login-form">
+                <label for="login-email">
+                    <span class="label-text">운영 계정 이메일</span>
+                    <input id="login-email" type="email" value="admin@bidderlive.com">
+                </label>
+
+                <label for="login-password">
+                    <span class="label-text">비밀번호</span>
+                    <input id="login-password" type="password" value="admin1234">
+                </label>
+
+                <label for="login-nickname">
+                    <span class="label-text">운영자 이름 / 닉네임</span>
+                    <input id="login-nickname" type="text" value="커뮤니티운영팀">
+                </label>
+
+                <fieldset>
+                    <legend>권한 구분</legend>
+                    <div class="role-row">
+                        <label>
+                            <input type="radio" name="admin-role" value="admin" checked>
+                            <span>운영자</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="admin-role" value="staff">
+                            <span>스태프</span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="primary-btn full-width">관리자 페이지 입장</button>
+            </form>
+
+            <div class="auth-footer">
+                <span>일반 회원은 비더라이브 앱의 커뮤니티를 이용해 주세요.</span>
+                <span>접속 문의 · support@bidderlive.com</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 관리자 콘솔 -->
+    <div id="app" class="hidden">
+        <header class="top-bar">
+            <div class="logo-and-nav">
+                <div class="logo">
+                    <span>ADMIN</span>
+                    <span>BidderLive Community Console</span>
+                </div>
+                <nav class="main-nav">
+                    <button class="nav-link active" data-target="dashboard-section">대시보드</button>
+                    <button class="nav-link" data-target="posts-section">게시글 관리</button>
+                    <button class="nav-link" data-target="reports-section">신고·제재</button>
+                    <button class="nav-link" data-target="users-section">유저 관리</button>
+                    <button class="nav-link" data-target="ads-section">광고·배너</button>
+                    <button class="nav-link" data-target="system-section">시스템 로그</button>
+                </nav>
+            </div>
+            <div class="search-bar">
+                <input id="global-search-input" type="text" autocomplete="off" placeholder="게시글 · 유저 · 신고 키워드 검색" />
+            </div>
+            <div class="user-area">
+                <div class="user-meta">
+                    <span class="nickname-label" id="current-admin-name">관리자</span>
+                    <span class="role-label" id="current-admin-role">권한</span>
+                </div>
+                <button id="logout-btn" class="secondary-btn">로그아웃</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- 대시보드 -->
+            <section id="dashboard-section" class="page-section">
+                <div class="section-header">
+                    <h2>운영 대시보드</h2>
+                    <p class="section-subtitle">
+                        커뮤니티 게시글, 신고, 유저 제재 현황을 한눈에 확인하는 화면입니다.
+                    </p>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card animate-enter delay-1">
+                        <div class="stat-label">전체 게시글</div>
+                        <div class="stat-value" id="stat-total-posts">0</div>
+                        <div class="stat-sub">숨김 <span id="stat-hidden-posts">0</span> · HIT <span
+                                id="stat-hit-posts">0</span></div>
+                    </div>
+                    <div class="stat-card animate-enter delay-2">
+                        <div class="stat-label">최근 24시간 등록(샘플)</div>
+                        <div class="stat-value" id="stat-recent-posts">0</div>
+                        <div class="stat-sub">HIT <span id="stat-recent-hits">0</span></div>
+                    </div>
+                    <div class="stat-card animate-enter delay-3">
+                        <div class="stat-label">처리 대기 신고</div>
+                        <div class="stat-value" id="stat-pending-reports">0</div>
+                        <div class="stat-sub">최근 신고 <span id="stat-reports-24h">0</span></div>
+                    </div>
+                    <div class="stat-card animate-enter delay-4">
+                        <div class="stat-label">차단 / 제재 유저</div>
+                        <div class="stat-value" id="stat-blocked-users">0</div>
+                        <div class="stat-sub">딜러 <span id="stat-blocked-dealers">0</span></div>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="tile animate-enter delay-5">
+                        <div class="tile-header">
+                            <div>
+                                <h4 class="tile-title">최근 신고</h4>
+                                <p class="tile-sub">처리가 필요한 최신 신고 10개입니다.</p>
+                            </div>
+                            <button class="small-link" data-target="reports-section">전체 신고 보기 →</button>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>대상</th>
+                                    <th>신고자 / 일시</th>
+                                    <th>상태</th>
+                                    <th>처리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-recent-reports-body"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="tile animate-enter delay-5">
+                        <div class="tile-header">
+                            <div>
+                                <h4 class="tile-title">최근 등록 게시글</h4>
+                                <p class="tile-sub">운영 모니터링이 필요한 최신 게시글입니다.</p>
+                            </div>
+                            <button class="small-link" data-target="posts-section">게시글 관리로 이동 →</button>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>게시글</th>
+                                    <th>작성자</th>
+                                    <th>상태</th>
+                                    <th>등록일</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-recent-posts-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 게시글 관리 -->
+            <section id="posts-section" class="page-section hidden">
+                <div class="section-header">
+                    <h2>게시글 관리</h2>
+                    <p class="section-subtitle">
+                        카테고리·상태·키워드 기준으로 게시글을 조회하고 <strong>숨김 / HIT 설정</strong>을 할 수 있는 화면입니다.
+                    </p>
+                </div>
+
+                <div class="filter-row">
+                    <select id="admin-posts-category-filter">
+                        <option value="all">카테고리 전체</option>
+                        <option value="arttoy">아트토이</option>
+                        <option value="figure">피규어</option>
+                        <option value="lego">레고</option>
+                        <option value="sportscard">스포츠카드</option>
+                        <option value="fashion">패션</option>
+                        <option value="gundam">건담</option>
+                        <option value="tradingcard">트레이딩카드</option>
+                        <option value="luxury">명품</option>
+                        <option value="stamp">우표</option>
+                        <option value="cdlp">CD / LP</option>
+                    </select>
+                    <select id="admin-posts-status-filter">
+                        <option value="all">상태 전체</option>
+                        <option value="visible">노출</option>
+                        <option value="hidden">숨김</option>
+                    </select>
+                    <input id="admin-posts-search" type="text" placeholder="제목 / 작성자 / ID 검색">
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>게시글</th>
+                            <th>작성자</th>
+                            <th>상태</th>
+                            <th>지표</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-posts-body"></tbody>
+                </table>
+            </section>
+
+            <!-- 신고 / 제재 관리 -->
+            <section id="reports-section" class="page-section hidden">
+                <div class="section-header">
+                    <h2>신고 · 제재 관리</h2>
+                    <p class="section-subtitle">
+                        게시글/댓글 신고를 확인하고, 상태를 변경하거나 유저 제재 근거를 남길 수 있습니다. (데모: UI만 동작)
+                    </p>
+                </div>
+
+                <div class="filter-row">
+                    <select id="admin-reports-status-filter">
+                        <option value="pending">처리 대기</option>
+                        <option value="in_progress">진행 중</option>
+                        <option value="resolved">처리 완료</option>
+                        <option value="all">전체 보기</option>
+                    </select>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>대상</th>
+                            <th>신고자 / 사유</th>
+                            <th>상태</th>
+                            <th>처리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-reports-body"></tbody>
+                </table>
+            </section>
+
+            <!-- 유저 관리 -->
+            <section id="users-section" class="page-section hidden">
+                <div class="section-header">
+                    <h2>유저 관리</h2>
+                    <p class="section-subtitle">
+                        컬렉터 / 딜러 / 운영자 계정을 조회하고 <strong>차단 / 차단 해제</strong>를 수행합니다.
+                    </p>
+                </div>
+
+                <div class="filter-row">
+                    <select id="admin-users-role-filter">
+                        <option value="all">역할 전체</option>
+                        <option value="collector">컬렉터</option>
+                        <option value="dealer">딜러</option>
+                        <option value="admin">운영자</option>
+                    </select>
+                    <select id="admin-users-status-filter">
+                        <option value="all">상태 전체</option>
+                        <option value="normal">정상</option>
+                        <option value="blocked">차단</option>
+                    </select>
+                    <input id="admin-users-search" type="text" placeholder="닉네임 / 이메일 검색">
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>유저</th>
+                            <th>역할</th>
+                            <th>상태</th>
+                            <th>가입일</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-users-body"></tbody>
+                </table>
+            </section>
+
+            <!-- 광고 / 배너 관리 -->
+            <section id="ads-section" class="page-section hidden">
+                <div class="section-header">
+                    <h2>광고 · 배너 관리</h2>
+                    <p class="section-subtitle">
+                        커뮤니티 메인 및 피드 상단에 노출되는 배너/썸네일 광고 슬롯을 <strong>등록 · 수정 · 삭제</strong>할 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="tile">
+                    <div class="tile-header">
+                        <div>
+                            <h4 class="tile-title">메인 배너 슬롯</h4>
+                            <p class="tile-sub">AD 슬롯을 등록 / 수정 / 삭제할 수 있습니다. 실제 연동 시 백오피스 데이터와 연결하면 됩니다.</p>
+                        </div>
+                    </div>
+
+                    <!-- 배너 등록 / 수정 폼 -->
+                    <form id="ads-form">
+                        <div class="ads-form-grid">
+                            <div class="form-group">
+                                <label>
+                                    <span class="label-text">슬롯</span>
+                                    <span class="small-helper">등록 시 AD-번호 형식으로 자동 부여됩니다.</span>
+                                </label>
+                                <input id="ads-slot" type="text" placeholder="등록 시 자동 생성" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="ads-title"><span class="label-text">캠페인명</span></label>
+                                <input id="ads-title" type="text" placeholder="예: 주말 한정 라이브 특가전">
+                            </div>
+                            <div class="form-group">
+                                <label for="ads-owner"><span class="label-text">광고주 / 소유자</span></label>
+                                <input id="ads-owner" type="text" placeholder="예: 패션 파트너">
+                            </div>
+                            <div class="form-group">
+                                <label for="ads-position"><span class="label-text">노출 위치</span></label>
+                                <select id="ads-position">
+                                    <option value="홈 메인 상단">홈 메인 상단</option>
+                                    <option value="홈 메인 썸네일">홈 메인 썸네일</option>
+                                    <option value="피드 상단">피드 상단</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ads-period"><span class="label-text">기간</span></label>
+                                <input id="ads-period" type="text" placeholder="예: 2025-03-01 ~ 2025-03-07">
+                            </div>
+                            <div class="form-group">
+                                <label for="ads-status"><span class="label-text">상태</span></label>
+                                <select id="ads-status">
+                                    <option value="on">노출 중</option>
+                                    <option value="off">비노출</option>
+                                </select>
+                            </div>
+                            <div class="form-group ads-form-actions">
+                                <button type="submit" class="primary-btn small" id="ads-submit-btn">배너 등록</button>
+                                <button type="button" class="secondary-btn small hidden"
+                                    id="ads-cancel-edit-btn">취소</button>
+                            </div>
+                        </div>
+                    </form>
+                    <p class="small-helper">슬롯 번호는 AD-1, AD-2처럼 자동으로 증가하며, 삭제 후에도 중복되지 않습니다.</p>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>슬롯</th>
+                                <th>캠페인</th>
+                                <th>상태</th>
+                                <th>기간</th>
+                                <th>관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-ads-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 시스템 로그 -->
+            <section id="system-section" class="page-section hidden">
+                <div class="section-header">
+                    <h2>시스템 로그 · 점검 메모</h2>
+                    <p class="section-subtitle">
+                        이 콘솔에서 발생한 주요 액션을 브라우저 메모리 상에 기록하는 샘플 로그 화면입니다.
+                    </p>
+                </div>
+
+                <div class="tile">
+                    <div class="tile-header">
+                        <div>
+                            <h4 class="tile-title">최근 작업 로그</h4>
+                            <p class="tile-sub">페이지를 새로고침하면 로그는 초기화됩니다. 실제 운영 환경에서는 서버 로그로 대체하세요.</p>
+                        </div>
+                        <button id="clear-log-btn" class="secondary-btn small">로그 전체 삭제</button>
+                    </div>
+                    <ul id="system-log-list" class="log-list"></ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Post Detail Modal -->
+    <div id="post-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">게시글 상세</h3>
+                <button class="modal-close" onclick="closeModal('post-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <span class="modal-label">제목</span>
+                <div id="modal-post-title" class="modal-value"></div>
+                <span class="modal-label">작성자</span>
+                <div id="modal-post-author" class="modal-value"></div>
+                <span class="modal-label">내용</span>
+                <div id="modal-post-content" class="modal-value" style="min-height: 100px; white-space: pre-wrap;">
+                    (게시글 내용이 여기에 표시됩니다)
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="closeModal('post-modal')">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Detail Modal -->
+    <div id="report-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">신고 상세 내용</h3>
+                <button class="modal-close" onclick="closeModal('report-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <span class="modal-label">신고 대상</span>
+                <div id="modal-report-target" class="modal-value"></div>
+                <span class="modal-label">신고자</span>
+                <div id="modal-report-reporter" class="modal-value"></div>
+                <span class="modal-label">신고 사유</span>
+                <div id="modal-report-reason" class="modal-value"></div>
+                <span class="modal-label">상세 내용</span>
+                <div id="modal-report-detail" class="modal-value"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="closeModal('report-modal')">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sanction Modal -->
+    <div id="sanction-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">유저 제재 및 조치</h3>
+                <button class="modal-close" onclick="closeModal('sanction-modal')">×</button>
+            </div>
+            <div class="modal-body">
+                <span class="modal-label">대상 유저</span>
+                <div id="modal-sanction-user" class="modal-value"></div>
+
+                <span class="modal-label">게시글 조치</span>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="checkbox" id="sanction-hide-post">
+                        <span>해당 게시글 숨김 처리</span>
+                    </label>
+                </div>
+
+                <span class="modal-label">이용 제재 (정지)</span>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="sanction-duration" value="3" checked>
+                        <span>3일 정지</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="sanction-duration" value="7">
+                        <span>7일 정지</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="sanction-duration" value="permanent">
+                        <span>영구 정지 (차단)</span>
+                    </label>
+                </div>
+
+                <span class="modal-label">제재 사유 (유저에게 전송)</span>
+                <textarea id="sanction-reason" class="modal-input" placeholder="제재 사유를 입력하세요..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="secondary-btn" onclick="closeModal('sanction-modal')">취소</button>
+                <button class="primary-btn" id="sanction-submit-btn">제재 적용</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const CATEGORY_CONFIG = {
+                arttoy: '아트토이',
+                figure: '피규어',
+                lego: '레고',
+                sportscard: '스포츠카드',
+                fashion: '패션',
+                gundam: '건담',
+                tradingcard: '트레이딩카드',
+                luxury: '명품',
+                stamp: '우표',
+                cdlp: 'CD / LP'
+            };
+
+            const ROLE_LABELS = {
+                collector: '컬렉터',
+                dealer: '딜러',
+                admin: '운영자'
+            };
+
+            const REPORT_STATUS_LABELS = {
+                pending: '대기',
+                in_progress: '진행 중',
+                resolved: '완료'
+            };
+
+            const postsData = [
+                {
+                    id: 'arttoy-1',
+                    category: 'arttoy',
+                    title: '페이퍼 아트토이 첫 낙찰',
+                    author: 'arttoy_collector',
+                    isDealer: false,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 12,
+                    commentCount: 3,
+                    createdAtLabel: '2025-03-01 21:10',
+                    createdOrder: 11,
+                    isRecent: true
+                },
+                {
+                    id: 'sportscard-1',
+                    category: 'sportscard',
+                    title: '루키 카드 PSA 10',
+                    author: 'sports_card_king',
+                    isDealer: true,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 30,
+                    commentCount: 7,
+                    createdAtLabel: '2025-02-28 23:50',
+                    createdOrder: 10,
+                    isRecent: true
+                },
+                {
+                    id: 'figure-1',
+                    category: 'figure',
+                    title: '애니 캐릭터 1/6 스케일 피규어',
+                    author: 'statue_lover',
+                    isDealer: true,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 18,
+                    commentCount: 5,
+                    createdAtLabel: '2025-02-27 22:05',
+                    createdOrder: 9,
+                    isRecent: true
+                },
+                {
+                    id: 'lego-1',
+                    category: 'lego',
+                    title: '레고 모듈러 빌딩 완성',
+                    author: 'LEGO_city',
+                    isDealer: true,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 22,
+                    commentCount: 4,
+                    createdAtLabel: '2025-02-25 20:40',
+                    createdOrder: 8,
+                    isRecent: false
+                },
+                {
+                    id: 'fashion-1',
+                    category: 'fashion',
+                    title: '희귀 스니커즈 낙찰',
+                    author: 'sneakerhead',
+                    isDealer: true,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 21,
+                    commentCount: 4,
+                    createdAtLabel: '2025-02-20 18:20',
+                    createdOrder: 7,
+                    isRecent: false
+                },
+                {
+                    id: 'gundam-1',
+                    category: 'gundam',
+                    title: 'MG 건담 조립 완성',
+                    author: 'gunpla_builder',
+                    isDealer: false,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 16,
+                    commentCount: 3,
+                    createdAtLabel: '2025-02-19 21:00',
+                    createdOrder: 6,
+                    isRecent: false
+                },
+                {
+                    id: 'tradingcard-1',
+                    category: 'tradingcard',
+                    title: 'TCG 시크릿 레어 카드',
+                    author: 'tcg_secret',
+                    isDealer: false,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 14,
+                    commentCount: 3,
+                    createdAtLabel: '2025-02-18 19:10',
+                    createdOrder: 5,
+                    isRecent: false
+                },
+                {
+                    id: 'luxury-1',
+                    category: 'luxury',
+                    title: '빈티지 명품 가방',
+                    author: 'lux_vintage',
+                    isDealer: false,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 19,
+                    commentCount: 4,
+                    createdAtLabel: '2025-02-15 16:42',
+                    createdOrder: 4,
+                    isRecent: false
+                },
+                {
+                    id: 'stamp-1',
+                    category: 'stamp',
+                    title: '올드 코리아 우표 세트',
+                    author: 'stamp_history',
+                    isDealer: false,
+                    isHit: false,
+                    status: 'visible',
+                    likeCount: 7,
+                    commentCount: 1,
+                    createdAtLabel: '2025-02-14 14:00',
+                    createdOrder: 3,
+                    isRecent: false
+                },
+                {
+                    id: 'cdlp-1',
+                    category: 'cdlp',
+                    title: '초판 LP 레코드',
+                    author: 'vinyl_only',
+                    isDealer: true,
+                    isHit: true,
+                    status: 'visible',
+                    likeCount: 20,
+                    commentCount: 4,
+                    createdAtLabel: '2025-02-10 21:30',
+                    createdOrder: 2,
+                    isRecent: false
+                },
+                {
+                    id: 'arttoy-2',
+                    category: 'arttoy',
+                    title: '커스텀 베어브릭 자랑',
+                    author: 'BEARBRICK_LAB',
+                    isDealer: true,
+                    isHit: false,
+                    status: 'hidden',
+                    likeCount: 8,
+                    commentCount: 2,
+                    createdAtLabel: '2025-02-08 19:00',
+                    createdOrder: 1,
+                    isRecent: false
+                }
+            ];
+
+            const reportsData = [
+                {
+                    id: 'R-20250301-01',
+                    targetType: 'post',
+                    targetId: 'sportscard-1',
+                    reporter: 'numbered_only',
+                    reason: '사기/현금거래 유도',
+                    detail: '라이브 방송 외 개인 톡으로 현금 거래 유도',
+                    status: 'pending',
+                    createdAt: '2025-03-01 23:21',
+                    isRecent: true,
+                    cumulativeReports: 16 // Red Alert (15+)
+                },
+                {
+                    id: 'R-20250301-02',
+                    targetType: 'comment',
+                    targetId: 'comment-874',
+                    reporter: 'old_school',
+                    reason: '욕설/비하',
+                    detail: '선수 비하 표현',
+                    status: 'pending',
+                    createdAt: '2025-03-01 22:55',
+                    isRecent: true,
+                    cumulativeReports: 12 // Orange Alert (10+)
+                },
+                {
+                    id: 'R-20250228-01',
+                    targetType: 'post',
+                    targetId: 'arttoy-2',
+                    reporter: '입문러',
+                    reason: '스팸/홍보',
+                    detail: '타 플랫폼 홍보 링크 포함',
+                    status: 'in_progress',
+                    createdAt: '2025-02-28 20:10',
+                    isRecent: true,
+                    cumulativeReports: 6 // Yellow Alert (5+)
+                },
+                {
+                    id: 'R-20250227-01',
+                    targetType: 'post',
+                    targetId: 'lego-1',
+                    reporter: 'family_builder',
+                    reason: '기타',
+                    detail: '잘못된 카테고리로 등록',
+                    status: 'resolved',
+                    createdAt: '2025-02-27 14:30',
+                    isRecent: false,
+                    cumulativeReports: 2 // Normal
+                }
+            ];
+
+            const usersData = [
+                {
+                    id: 'U-0001',
+                    nickname: 'arttoy_collector',
+                    role: 'collector',
+                    email: 'arttoy@example.com',
+                    status: 'normal',
+                    isDealer: false,
+                    joinedAt: '2024-11-01'
+                },
+                {
+                    id: 'U-0002',
+                    nickname: 'statue_lover',
+                    role: 'dealer',
+                    email: 'statue@example.com',
+                    status: 'normal',
+                    isDealer: true,
+                    joinedAt: '2024-08-12'
+                },
+                {
+                    id: 'U-0003',
+                    nickname: 'sports_card_king',
+                    role: 'dealer',
+                    email: 'sportscard@example.com',
+                    status: 'blocked',
+                    isDealer: true,
+                    joinedAt: '2024-07-10'
+                },
+                {
+                    id: 'U-0004',
+                    nickname: 'sneakerhead',
+                    role: 'dealer',
+                    email: 'sneaker@example.com',
+                    status: 'normal',
+                    isDealer: true,
+                    joinedAt: '2024-09-03'
+                },
+                {
+                    id: 'U-0005',
+                    nickname: 'vinyl_only',
+                    role: 'dealer',
+                    email: 'vinyl@example.com',
+                    status: 'normal',
+                    isDealer: true,
+                    joinedAt: '2024-10-22'
+                },
+                {
+                    id: 'U-0006',
+                    nickname: '입문러',
+                    role: 'collector',
+                    email: 'newbie@example.com',
+                    status: 'normal',
+                    isDealer: false,
+                    joinedAt: '2025-01-02'
+                },
+                {
+                    id: 'U-0007',
+                    nickname: '운영자',
+                    role: 'admin',
+                    email: 'admin@bidderlive.com',
+                    status: 'normal',
+                    isDealer: false,
+                    joinedAt: '2024-01-01'
+                }
+            ];
+
+            // 이제 adsData는 수정/삭제를 위해 let 사용
+            let adsData = [
+                {
+                    slot: 'AD-1',
+                    title: '주말 한정 라이브 특가전',
+                    owner: '패션 파트너',
+                    status: 'on',
+                    position: '홈 메인 상단',
+                    period: '2025-03-01 ~ 2025-03-07'
+                },
+                {
+                    slot: 'AD-2',
+                    title: '스포츠카드 랜덤박스 공동구매',
+                    owner: '스포츠카드 딜러 풀',
+                    status: 'on',
+                    position: '홈 메인 상단',
+                    period: '2025-02-25 ~ 2025-03-05'
+                },
+                {
+                    slot: 'AD-3',
+                    title: '프리미엄 피규어 딜러 입점',
+                    owner: 'statue_lover',
+                    status: 'off',
+                    position: '피드 상단',
+                    period: '2025-03-10 ~ 2025-03-31'
+                },
+                {
+                    slot: 'AD-4',
+                    title: '한정판 스니커즈 드로우',
+                    owner: 'sneakerhead',
+                    status: 'on',
+                    position: '홈 메인 썸네일',
+                    period: '2025-02-20 ~ 2025-03-20'
+                }
+            ];
+
+            let currentAdmin = null;
+            let searchTerm = '';
+            let logEntries = [];
+            let editingAdSlot = null;
+
+            // DOM 참조
+            const loginPage = document.getElementById('login-page');
+            const app = document.getElementById('app');
+            const loginForm = document.getElementById('login-form');
+            const loginNicknameInput = document.getElementById('login-nickname');
+            const currentAdminName = document.getElementById('current-admin-name');
+            const currentAdminRole = document.getElementById('current-admin-role');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.page-section');
+
+            const globalSearchInput = document.getElementById('global-search-input');
+            const adminPostsSearch = document.getElementById('admin-posts-search');
+            const adminUsersSearch = document.getElementById('admin-users-search');
+
+            const adminPostsCategoryFilter = document.getElementById('admin-posts-category-filter');
+            const adminPostsStatusFilter = document.getElementById('admin-posts-status-filter');
+            const adminReportsStatusFilter = document.getElementById('admin-reports-status-filter');
+            const adminUsersRoleFilter = document.getElementById('admin-users-role-filter');
+            const adminUsersStatusFilter = document.getElementById('admin-users-status-filter');
+
+            const statTotalPosts = document.getElementById('stat-total-posts');
+            const statHiddenPosts = document.getElementById('stat-hidden-posts');
+            const statHitPosts = document.getElementById('stat-hit-posts');
+            const statRecentPosts = document.getElementById('stat-recent-posts');
+            const statRecentHits = document.getElementById('stat-recent-hits');
+            const statPendingReports = document.getElementById('stat-pending-reports');
+            const statReports24h = document.getElementById('stat-reports-24h');
+            const statBlockedUsers = document.getElementById('stat-blocked-users');
+            const statBlockedDealers = document.getElementById('stat-blocked-dealers');
+
+            const dashboardRecentReportsBody = document.getElementById('dashboard-recent-reports-body');
+            const dashboardRecentPostsBody = document.getElementById('dashboard-recent-posts-body');
+
+            const adminPostsBody = document.getElementById('admin-posts-body');
+            const adminReportsBody = document.getElementById('admin-reports-body');
+            const adminUsersBody = document.getElementById('admin-users-body');
+            const adminAdsBody = document.getElementById('admin-ads-body');
+
+            const systemLogList = document.getElementById('system-log-list');
+            const clearLogBtn = document.getElementById('clear-log-btn');
+
+            // 광고 폼 DOM
+            const adsForm = document.getElementById('ads-form');
+            const adsSlotInput = document.getElementById('ads-slot');
+            const adsTitleInput = document.getElementById('ads-title');
+            const adsOwnerInput = document.getElementById('ads-owner');
+            const adsPositionSelect = document.getElementById('ads-position');
+            const adsPeriodInput = document.getElementById('ads-period');
+            const adsStatusSelect = document.getElementById('ads-status');
+            const adsSubmitBtn = document.getElementById('ads-submit-btn');
+            const adsCancelEditBtn = document.getElementById('ads-cancel-edit-btn');
+
+            function showSection(id) {
+                sections.forEach(sec => {
+                    sec.classList.toggle('hidden', sec.id !== id);
+                });
+            }
+
+            function activateNav(id) {
+                navLinks.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.target === id);
+                });
+            }
+
+            function setSearchTerm(value) {
+                searchTerm = (value || '').trim().toLowerCase();
+                if (adminPostsSearch && adminPostsSearch !== document.activeElement) {
+                    adminPostsSearch.value = value;
+                }
+                if (adminUsersSearch && adminUsersSearch !== document.activeElement) {
+                    adminUsersSearch.value = value;
+                }
+                if (globalSearchInput && globalSearchInput !== document.activeElement) {
+                    globalSearchInput.value = value;
+                }
+                renderPostsTable();
+                renderUsersTable();
+                renderReportsTable();
+            }
+
+            function pushLog(message) {
+                const now = new Date();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const mm = String(now.getMinutes()).padStart(2, '0');
+                const time = hh + ':' + mm;
+                logEntries.unshift({ time, message });
+                if (logEntries.length > 50) {
+                    logEntries.length = 50;
+                }
+                renderLog();
+            }
+
+            let currentSanctionTarget = null; // { userId, reportId, postId }
+
+            // Modal Functions
+            window.closeModal = function (id) {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            };
+
+            window.openPostModal = function (id) {
+                const post = postsData.find(p => p.id === id);
+                if (!post) return;
+
+                document.getElementById('modal-post-title').textContent = post.title;
+                document.getElementById('modal-post-author').textContent = post.author;
+                document.getElementById('modal-post-content').textContent = `[${post.category}] 카테고리에 등록된 게시글입니다.\n\n(더미 데이터 내용)\n이 게시글은 ${post.createdAtLabel}에 작성되었습니다.\n좋아요: ${post.likeCount}, 댓글: ${post.commentCount}`;
+
+                const el = document.getElementById('post-modal');
+                if (el) el.classList.remove('hidden');
+            };
+
+            window.openReportModal = function (id) {
+                const report = reportsData.find(r => r.id === id);
+                if (!report) return;
+
+                document.getElementById('modal-report-target').textContent = `[${report.targetType}] ${report.targetId}`;
+                document.getElementById('modal-report-reporter').textContent = report.reporter;
+                document.getElementById('modal-report-reason').textContent = report.reason;
+                document.getElementById('modal-report-detail').textContent = report.detail || '(상세 내용 없음)';
+
+                const el = document.getElementById('report-modal');
+                if (el) el.classList.remove('hidden');
+            };
+
+            window.openSanctionModal = function (reportId) {
+                const report = reportsData.find(r => r.id === reportId);
+                if (!report) return;
+
+                // Find associated user (mock logic: assume reporter is NOT the target, but we need target user)
+                // For demo, let's assume targetId's author is the target user.
+                // In real app, report object should have targetUserId.
+                // Here we try to find post author if targetType is post.
+                let targetUserId = 'Unknown';
+                let targetUserNickname = 'Unknown';
+                let postId = null;
+
+                if (report.targetType === 'post') {
+                    const post = postsData.find(p => p.id === report.targetId);
+                    if (post) {
+                        targetUserNickname = post.author;
+                        postId = post.id;
+                        // Find user object by nickname for demo
+                        const user = usersData.find(u => u.nickname === post.author);
+                        if (user) targetUserId = user.id;
+                    }
+                } else {
+                    targetUserNickname = 'Commenter'; // Mock
+                }
+
+                currentSanctionTarget = {
+                    userId: targetUserId,
+                    nickname: targetUserNickname,
+                    reportId: report.id,
+                    postId: postId
+                };
+
+                document.getElementById('modal-sanction-user').textContent = `${targetUserNickname} (${targetUserId})`;
+                document.getElementById('sanction-reason').value = '';
+                document.getElementById('sanction-hide-post').checked = false;
+
+                // If not a post report, disable hide post option
+                const hideCheckbox = document.getElementById('sanction-hide-post');
+                if (!postId) {
+                    hideCheckbox.disabled = true;
+                } else {
+                    hideCheckbox.disabled = false;
+                }
+
+                const el = document.getElementById('sanction-modal');
+                if (el) el.classList.remove('hidden');
+            };
+
+            function handleSanctionSubmit() {
+                if (!currentSanctionTarget) return;
+
+                const duration = document.querySelector('input[name="sanction-duration"]:checked').value;
+                const reason = document.getElementById('sanction-reason').value;
+                const hidePost = document.getElementById('sanction-hide-post').checked;
+
+                if (!reason) {
+                    alert('제재 사유를 입력해주세요.');
+                    return;
+                }
+
+                // 1. Log Sanction
+                let durationLabel = '';
+                if (duration === '3') durationLabel = '3일 정지';
+                else if (duration === '7') durationLabel = '7일 정지';
+                else durationLabel = '영구 정지';
+
+                pushLog(`[제재] ${currentSanctionTarget.nickname} - ${durationLabel} (사유: ${reason})`);
+
+                // 2. Hide Post if requested
+                if (hidePost && currentSanctionTarget.postId) {
+                    const post = postsData.find(p => p.id === currentSanctionTarget.postId);
+                    if (post) {
+                        post.status = 'hidden';
+                        pushLog(`[제재] 관련 게시글 ${post.id} 숨김 처리됨`);
+                    }
+                }
+
+                // 3. Update Report Status
+                const report = reportsData.find(r => r.id === currentSanctionTarget.reportId);
+                if (report) {
+                    report.status = 'resolved';
+                    pushLog(`[신고] ${report.id} 처리 완료 (제재 적용)`);
+                }
+
+                // 4. Update User Status (Mock)
+                const user = usersData.find(u => u.id === currentSanctionTarget.userId);
+                if (user) {
+                    user.status = 'blocked'; // For demo, just mark as blocked
+                }
+
+                renderDashboard();
+                renderReportsTable();
+                renderPostsTable();
+                renderUsersTable();
+
+                closeModal('sanction-modal');
+                alert('제재가 적용되었습니다.');
+            }
+
+            function animateValue(obj, start, end, duration) {
+                if (!obj) return;
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = Math.floor(progress * (end - start) + start);
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            function renderStats() {
+                const total = postsData.length;
+                const hidden = postsData.filter(p => p.status === 'hidden').length;
+                const hit = postsData.filter(p => p.isHit).length;
+                const recentPosts = postsData.filter(p => p.isRecent);
+                const recentHits = recentPosts.filter(p => p.isHit);
+
+                const pendingReports = reportsData.filter(r => r.status === 'pending');
+                const recentPending = pendingReports.filter(r => r.isRecent);
+
+                const blocked = usersData.filter(u => u.status === 'blocked');
+                const blockedDealers = blocked.filter(u => u.role === 'dealer');
+
+                animateValue(statTotalPosts, 0, total, 1500);
+                animateValue(statHiddenPosts, 0, hidden, 1500);
+                animateValue(statHitPosts, 0, hit, 1500);
+                animateValue(statRecentPosts, 0, recentPosts.length, 1500);
+                animateValue(statRecentHits, 0, recentHits.length, 1500);
+                animateValue(statPendingReports, 0, pendingReports.length, 1500);
+                animateValue(statReports24h, 0, recentPending.length, 1500);
+                animateValue(statBlockedUsers, 0, blocked.length, 1500);
+                animateValue(statBlockedDealers, 0, blockedDealers.length, 1500);
+            }
+
+            function renderDashboardRecentReports() {
+                if (!dashboardRecentReportsBody) return;
+                dashboardRecentReportsBody.innerHTML = '';
+
+                const sorted = reportsData
+                    .slice()
+                    .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+
+                sorted.slice(0, 10).forEach(r => {
+                    const statusLabel = REPORT_STATUS_LABELS[r.status] || r.status;
+                    const tr = document.createElement('tr');
+
+                    // Alert Logic
+                    const count = r.cumulativeReports || 0;
+                    if (count >= 15) {
+                        tr.classList.add('alert-red');
+                    } else if (count >= 10) {
+                        tr.classList.add('alert-orange');
+                    } else if (count >= 5) {
+                        tr.classList.add('alert-yellow');
+                    }
+
+                    tr.innerHTML = `
+            <td>
+              <div class="table-main-text">
+                [${r.targetType === 'post' ? '게시글' : '댓글'}] ${r.targetId}
+              </div>
+              <div class="table-sub-text ellipsis">${r.reason || ''} (누적: ${count}회)</div>
+            </td>
+            <td>
+              <div class="table-main-text">${r.reporter || ''}</div>
+              <div class="table-sub-text">${r.createdAt || ''}</div>
+            </td>
+            <td>
+              <span class="badge badge-status-${r.status}">${statusLabel}</span>
+            </td>
+            <td>
+              <div class="table-actions">
+                ${r.status !== 'resolved'
+                            ? `<button class="icon-btn small" data-action="change-report-status" data-id="${r.id}" data-to="resolved">완료</button>`
+                            : `<button class="icon-btn small" data-action="change-report-status" data-id="${r.id}" data-to="pending">다시 열기</button>`
+                        }
+              </div>
+            </td>
+          `;
+                    dashboardRecentReportsBody.appendChild(tr);
+                });
+            }
+
+            function renderDashboardRecentPosts() {
+                if (!dashboardRecentPostsBody) return;
+                dashboardRecentPostsBody.innerHTML = '';
+
+                const sorted = postsData
+                    .slice()
+                    .sort((a, b) => (b.createdOrder || 0) - (a.createdOrder || 0));
+
+                sorted.slice(0, 10).forEach(p => {
+                    const categoryLabel = CATEGORY_CONFIG[p.category] || p.category || '기타';
+                    const statusLabel = p.status === 'visible' ? '노출' : '숨김';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+            <td>
+              <div class="table-main-text ellipsis">${p.title}</div>
+              <div class="table-sub-text">${categoryLabel} · ID: ${p.id}</div>
+            </td>
+            <td>
+              <div class="table-main-text">${p.author}</div>
+              <div class="table-sub-text">
+                ${p.isDealer ? '딜러' : '컬렉터'}
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-status-${p.status}">${statusLabel}</span>
+              ${p.isHit ? '<span class="badge badge-outline small">HIT</span>' : ''}
+            </td>
+            <td>${p.createdAtLabel}</td>
+            <td>
+              <div class="table-actions">
+                <button class="icon-btn small" data-action="open-post-from-dashboard" data-id="${p.id}">게시글 보기</button>
+              </div>
+            </td>
+          `;
+                    dashboardRecentPostsBody.appendChild(tr);
+                });
+            }
+
+            function renderDashboard() {
+                renderStats();
+                renderDashboardRecentReports();
+                renderDashboardRecentPosts();
+            }
+
+            function renderPostsTable() {
+                if (!adminPostsBody) return;
+                adminPostsBody.innerHTML = '';
+
+                const statusFilter = adminPostsStatusFilter ? adminPostsStatusFilter.value : 'all';
+                const categoryFilter = adminPostsCategoryFilter ? adminPostsCategoryFilter.value : 'all';
+                const term = searchTerm;
+
+                postsData.forEach(p => {
+                    if (statusFilter !== 'all' && p.status !== statusFilter) return;
+                    if (categoryFilter !== 'all' && p.category !== categoryFilter) return;
+
+                    if (term) {
+                        const haystack = [
+                            p.title,
+                            p.author,
+                            p.id,
+                            CATEGORY_CONFIG[p.category] || '',
+                            p.createdAtLabel
+                        ].join(' ').toLowerCase();
+                        if (!haystack.includes(term)) return;
+                    }
+
+                    const categoryLabel = CATEGORY_CONFIG[p.category] || p.category || '기타';
+                    const statusLabel = p.status === 'visible' ? '노출' : '숨김';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+            <td>
+              <div class="table-main-text ellipsis">
+                  <a href="#" onclick="event.preventDefault(); openPostModal('${p.id}')" style="color:inherit; text-decoration:underline; text-underline-offset:4px;">${p.title}</a>
+              </div>
+              <div class="table-sub-text">
+                ${categoryLabel} · ID: ${p.id}
+              </div>
+            </td>
+            <td>
+              <div class="table-main-text">${p.author}</div>
+              <div class="table-sub-text">
+                ${p.isDealer ? '딜러' : '컬렉터'}
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-status-${p.status}">${statusLabel}</span>
+              ${p.isHit ? '<span class="badge badge-outline small">HIT</span>' : ''}
+            </td>
+            <td>
+              <div class="table-main-text">♥ ${p.likeCount} · 💬 ${p.commentCount}</div>
+              <div class="table-sub-text">${p.createdAtLabel}</div>
+            </td>
+            <td>
+              <div class="table-actions">
+                <button class="icon-btn small"
+                        data-action="toggle-post-status"
+                        data-id="${p.id}">
+                  ${p.status === 'visible' ? '숨김 처리' : '노출 전환'}
+                </button>
+                <button class="icon-btn small"
+                        data-action="toggle-hit"
+                        data-id="${p.id}">
+                  ${p.isHit ? 'HIT 해제' : 'HIT 설정'}
+                </button>
+              </div>
+            </td>
+          `;
+                    adminPostsBody.appendChild(tr);
+                });
+            }
+
+            function renderReportsTable() {
+                if (!adminReportsBody) return;
+                adminReportsBody.innerHTML = '';
+
+                const statusFilter = adminReportsStatusFilter ? adminReportsStatusFilter.value : 'pending';
+                const term = searchTerm;
+
+                reportsData.forEach(r => {
+                    if (statusFilter !== 'all' && r.status !== statusFilter) return;
+
+                    if (term) {
+                        const haystack = [
+                            r.id,
+                            r.targetId,
+                            r.reporter,
+                            r.reason,
+                            r.detail
+                        ].join(' ').toLowerCase();
+                        if (!haystack.includes(term)) return;
+                    }
+
+                    const statusLabel = REPORT_STATUS_LABELS[r.status] || r.status;
+                    const tr = document.createElement('tr');
+
+                    // Alert Logic
+                    const count = r.cumulativeReports || 0;
+                    if (count >= 15) {
+                        tr.classList.add('alert-red');
+                    } else if (count >= 10) {
+                        tr.classList.add('alert-orange');
+                    } else if (count >= 5) {
+                        tr.classList.add('alert-yellow');
+                    }
+
+                    tr.innerHTML = `
+            <td>
+              <div class="table-main-text">
+                [${r.targetType === 'post' ? '게시글' : '댓글'}] ${r.targetId}
+              </div>
+              <div class="table-sub-text ellipsis">${r.detail || ''} (누적: ${count}회)</div>
+            </td>
+            <td>
+              <div class="table-main-text">${r.reporter}</div>
+              <div class="table-sub-text">${r.reason}</div>
+            </td>
+            <td>
+              <span class="badge badge-status-${r.status}">${statusLabel}</span>
+            </td>
+            <td>
+              <div class="table-actions">
+                <button class="icon-btn small" onclick="openReportModal('${r.id}')">상세</button>
+                <button class="icon-btn small" onclick="openSanctionModal('${r.id}')" style="color:#ef4444; border-color:#ef4444;">제재</button>
+                ${r.status !== 'pending'
+                            ? `<button class="icon-btn small"
+                                data-action="change-report-status"
+                                data-to="pending"
+                                data-id="${r.id}">대기로 변경</button>`
+                            : `<button class="icon-btn small"
+                                data-action="change-report-status"
+                                data-to="in_progress"
+                                data-id="${r.id}">진행 중</button>`
+                        }
+                ${r.status !== 'resolved'
+                            ? `<button class="icon-btn small"
+                                data-action="change-report-status"
+                                data-to="resolved"
+                                data-id="${r.id}">완료</button>`
+                            : ''
+                        }
+              </div>
+            </td>
+          `;
+                    adminReportsBody.appendChild(tr);
+                });
+            }
+
+            function renderUsersTable() {
+                if (!adminUsersBody) return;
+                adminUsersBody.innerHTML = '';
+
+                const roleFilter = adminUsersRoleFilter ? adminUsersRoleFilter.value : 'all';
+                const statusFilter = adminUsersStatusFilter ? adminUsersStatusFilter.value : 'all';
+                const term = searchTerm;
+
+                usersData.forEach(u => {
+                    if (roleFilter !== 'all' && u.role !== roleFilter) return;
+                    if (statusFilter !== 'all' && u.status !== statusFilter) return;
+
+                    if (term) {
+                        const haystack = [
+                            u.nickname,
+                            u.email,
+                            ROLE_LABELS[u.role] || u.role
+                        ].join(' ').toLowerCase();
+                        if (!haystack.includes(term)) return;
+                    }
+
+                    const roleLabel = ROLE_LABELS[u.role] || u.role;
+                    const statusLabel = u.status === 'blocked' ? '차단' : '정상';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+            <td>
+              <div class="table-main-text">${u.nickname}</div>
+              <div class="table-sub-text">${u.email}</div>
+            </td>
+            <td>
+              <span class="badge badge-outline">${roleLabel}</span>
+              ${u.isDealer ? '<span class="badge badge-outline small">딜러</span>' : ''}
+            </td>
+            <td>
+              <span class="badge badge-status-${u.status}">${statusLabel}</span>
+            </td>
+            <td>${u.joinedAt}</td>
+            <td>
+              <div class="table-actions">
+                ${u.role === 'admin'
+                            ? '<span class="table-sub-text">자기 자신 / 운영자 계정</span>'
+                            : `<button class="icon-btn small"
+                               data-action="toggle-user-block"
+                               data-id="${u.id}">
+                         ${u.status === 'blocked' ? '차단 해제' : '차단'}
+                       </button>`
+                        }
+              </div>
+            </td>
+          `;
+                    adminUsersBody.appendChild(tr);
+                });
+            }
+
+            function renderAdsTable() {
+                if (!adminAdsBody) return;
+                adminAdsBody.innerHTML = '';
+
+                adsData.forEach(ad => {
+                    const statusLabel = ad.status === 'on' ? '노출 중' : '비노출';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+            <td>${ad.slot}</td>
+            <td>
+              <div class="table-main-text ellipsis">${ad.title}</div>
+              <div class="table-sub-text">${ad.owner}</div>
+              <div class="table-sub-text">${ad.position}</div>
+            </td>
+            <td>
+              <span class="badge badge-status-${ad.status}">${statusLabel}</span>
+            </td>
+            <td>${ad.period}</td>
+            <td>
+              <div class="table-actions">
+                <button class="icon-btn small"
+                        data-action="edit-ad"
+                        data-id="${ad.slot}">
+                  수정
+                </button>
+                <button class="icon-btn small"
+                        data-action="delete-ad"
+                        data-id="${ad.slot}">
+                  삭제
+                </button>
+                <button class="icon-btn small"
+                        data-action="toggle-ad-status"
+                        data-id="${ad.slot}">
+                  ${ad.status === 'on' ? 'OFF 전환' : 'ON 전환'}
+                </button>
+              </div>
+            </td>
+          `;
+                    adminAdsBody.appendChild(tr);
+                });
+            }
+
+            function getNextAdSlot() {
+                if (!adsData.length) return 'AD-1';
+                let maxNum = 0;
+                adsData.forEach(ad => {
+                    if (!ad.slot) return;
+                    const num = parseInt(String(ad.slot).replace(/[^0-9]/g, ''), 10);
+                    if (!isNaN(num) && num > maxNum) maxNum = num;
+                });
+                return 'AD-' + (maxNum + 1);
+            }
+
+            function resetAdsForm() {
+                editingAdSlot = null;
+                if (adsForm) adsForm.reset();
+                if (adsSlotInput) adsSlotInput.value = '';
+                if (adsStatusSelect) adsStatusSelect.value = 'on';
+                if (adsSubmitBtn) adsSubmitBtn.textContent = '배너 등록';
+                if (adsCancelEditBtn) adsCancelEditBtn.classList.add('hidden');
+            }
+
+            // 이벤트 바인딩
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const emailInput = document.getElementById('login-email');
+                    const passwordInput = document.getElementById('login-password');
+
+                    const email = (emailInput?.value || 'admin@bidderlive.com').trim();
+                    const password = (passwordInput?.value || 'admin1234').trim();
+                    const nickname = (loginNicknameInput?.value || '커뮤니티운영팀').trim();
+                    const roleValue = document.querySelector('input[name="admin-role"]:checked')?.value || 'admin';
+                    const roleLabel = roleValue === 'admin' ? '운영자' : '스태프';
+
+                    currentAdmin = {
+                        email,
+                        nickname,
+                        role: roleValue,
+                        roleLabel
+                    };
+
+                    if (currentAdminName) currentAdminName.textContent = nickname;
+                    if (currentAdminRole) currentAdminRole.textContent = roleLabel;
+
+                    if (loginPage) loginPage.classList.add('hidden');
+                    if (app) app.classList.remove('hidden');
+
+                    showSection('dashboard-section');
+                    activateNav('dashboard-section');
+
+                    renderDashboard();
+                    renderPostsTable();
+                    renderReportsTable();
+                    renderUsersTable();
+                    renderAdsTable();
+                    renderLog();
+
+                    pushLog(`[시스템] ${nickname} (${roleLabel}) 로그인`);
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function () {
+                    if (!currentAdmin) {
+                        if (app) app.classList.add('hidden');
+                        if (loginPage) loginPage.classList.remove('hidden');
+                        return;
+                    }
+                    const ok = window.confirm('관리자 페이지에서 로그아웃 하시겠습니까?');
+                    if (!ok) return;
+
+                    pushLog(`[시스템] ${currentAdmin.nickname} 로그아웃`);
+
+                    currentAdmin = null;
+                    if (app) app.classList.add('hidden');
+                    if (loginPage) loginPage.classList.remove('hidden');
+                });
+            }
+
+            // 광고 폼 제출
+            if (adsForm) {
+                adsForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const title = (adsTitleInput?.value || '').trim();
+                    const owner = (adsOwnerInput?.value || '').trim();
+                    const position = adsPositionSelect?.value || '홈 메인 상단';
+                    const period = (adsPeriodInput?.value || '').trim();
+                    const status = adsStatusSelect?.value || 'on';
+
+                    if (!title) {
+                        window.alert('캠페인명을 입력해 주세요.');
+                        if (adsTitleInput) adsTitleInput.focus();
+                        return;
+                    }
+                    if (!owner) {
+                        window.alert('광고주 / 소유자를 입력해 주세요.');
+                        if (adsOwnerInput) adsOwnerInput.focus();
+                        return;
+                    }
+                    if (!period) {
+                        window.alert('집행 기간을 입력해 주세요.');
+                        if (adsPeriodInput) adsPeriodInput.focus();
+                        return;
+                    }
+
+                    if (editingAdSlot) {
+                        const ad = adsData.find(a => a.slot === editingAdSlot);
+                        if (!ad) return;
+                        ad.title = title;
+                        ad.owner = owner;
+                        ad.position = position;
+                        ad.period = period;
+                        ad.status = status;
+                        pushLog(`[광고] ${ad.slot} 배너 정보 수정`);
+                    } else {
+                        const slot = getNextAdSlot();
+                        const ad = {
+                            slot,
+                            title,
+                            owner,
+                            status,
+                            position,
+                            period
+                        };
+                        adsData.push(ad);
+                        pushLog(`[광고] ${slot} (${title}) 신규 등록`);
+                    }
+
+                    renderAdsTable();
+                    resetAdsForm();
+                });
+            }
+
+            if (adsCancelEditBtn) {
+                adsCancelEditBtn.addEventListener('click', function () {
+                    resetAdsForm();
+                });
+            }
+
+            navLinks.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const target = btn.dataset.target;
+                    if (!target) return;
+                    showSection(target);
+                    activateNav(target);
+
+                    if (target === 'dashboard-section') {
+                        renderDashboard();
+                    } else if (target === 'posts-section') {
+                        renderPostsTable();
+                    } else if (target === 'reports-section') {
+                        renderReportsTable();
+                    } else if (target === 'users-section') {
+                        renderUsersTable();
+                    } else if (target === 'ads-section') {
+                        renderAdsTable();
+                    } else if (target === 'system-section') {
+                        renderLog();
+                    }
+                });
+            });
+
+            if (globalSearchInput) {
+                globalSearchInput.addEventListener('input', function () {
+                    setSearchTerm(this.value);
+                });
+            }
+
+            if (adminPostsSearch) {
+                adminPostsSearch.addEventListener('input', function () {
+                    setSearchTerm(this.value);
+                });
+            }
+
+            if (adminUsersSearch) {
+                adminUsersSearch.addEventListener('input', function () {
+                    setSearchTerm(this.value);
+                });
+            }
+
+            if (adminPostsCategoryFilter) {
+                adminPostsCategoryFilter.addEventListener('change', function () {
+                    renderPostsTable();
+                });
+            }
+
+            if (adminPostsStatusFilter) {
+                adminPostsStatusFilter.addEventListener('change', function () {
+                    renderPostsTable();
+                });
+            }
+
+            if (adminReportsStatusFilter) {
+                adminReportsStatusFilter.addEventListener('change', function () {
+                    renderReportsTable();
+                });
+            }
+
+            if (adminUsersRoleFilter) {
+                adminUsersRoleFilter.addEventListener('change', function () {
+                    renderUsersTable();
+                });
+            }
+
+            if (adminUsersStatusFilter) {
+                adminUsersStatusFilter.addEventListener('change', function () {
+                    renderUsersTable();
+                });
+            }
+
+            if (clearLogBtn) {
+                clearLogBtn.addEventListener('click', function () {
+                    const ok = window.confirm('로그를 모두 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.');
+                    if (!ok) return;
+                    logEntries = [];
+                    renderLog();
+                });
+            }
+
+            const sanctionSubmitBtn = document.getElementById('sanction-submit-btn');
+            if (sanctionSubmitBtn) {
+                sanctionSubmitBtn.addEventListener('click', handleSanctionSubmit);
+            }
+
+            // 대시보드 내 "전체 보기" 링크 / 액션 버튼 / 토글 버튼들
+            document.addEventListener('click', function (e) {
+                // 섹션 점프 (대시보드 안의 링크)
+                const jump = e.target.closest('.small-link[data-target]');
+                if (jump) {
+                    const target = jump.dataset.target;
+                    if (target) {
+                        showSection(target);
+                        activateNav(target);
+                        if (target === 'posts-section') {
+                            renderPostsTable();
+                        } else if (target === 'reports-section') {
+                            renderReportsTable();
+                        }
+                    }
+                    return;
+                }
+
+                const actionBtn = e.target.closest('[data-action]');
+                if (!actionBtn) return;
+
+                const action = actionBtn.dataset.action;
+                const id = actionBtn.dataset.id;
+
+                if (action === 'toggle-post-status') {
+                    const post = postsData.find(p => p.id === id);
+                    if (!post) return;
+                    post.status = post.status === 'visible' ? 'hidden' : 'visible';
+                    const statusLabel = post.status === 'visible' ? '노출' : '숨김';
+                    pushLog(`[게시글] ${post.id} (${post.title}) 상태를 "${statusLabel}" 으로 변경`);
+                    renderPostsTable();
+                    renderDashboard();
+                } else if (action === 'toggle-hit') {
+                    const post = postsData.find(p => p.id === id);
+                    if (!post) return;
+                    post.isHit = !post.isHit;
+                    pushLog(`[게시글] ${post.id} (${post.title}) HIT ${post.isHit ? '설정' : '해제'}`);
+                    renderPostsTable();
+                    renderDashboard();
+                } else if (action === 'change-report-status') {
+                    const report = reportsData.find(r => r.id === id);
+                    if (!report) return;
+                    const toStatus = actionBtn.dataset.to || 'pending';
+                    report.status = toStatus;
+                    const label = REPORT_STATUS_LABELS[toStatus] || toStatus;
+                    pushLog(`[신고] ${report.id} (${report.targetId}) 상태를 "${label}" 으로 변경`);
+                    renderReportsTable();
+                    renderDashboard();
+                } else if (action === 'open-post-from-dashboard') {
+                    const post = postsData.find(p => p.id === id);
+                    if (!post) return;
+                    showSection('posts-section');
+                    activateNav('posts-section');
+                    // 해당 게시글 ID 기준으로 검색
+                    setSearchTerm(post.id);
+                    renderPostsTable();
+                } else if (action === 'toggle-user-block') {
+                    const user = usersData.find(u => u.id === id);
+                    if (!user) return;
+                    user.status = user.status === 'blocked' ? 'normal' : 'blocked';
+                    const label = user.status === 'blocked' ? '차단' : '정상';
+                    pushLog(`[유저] ${user.nickname} (${user.email}) 상태를 "${label}" 으로 변경`);
+                    renderUsersTable();
+                    renderStats();
+                } else if (action === 'toggle-ad-status') {
+                    const ad = adsData.find(a => a.slot === id);
+                    if (!ad) return;
+                    ad.status = ad.status === 'on' ? 'off' : 'on';
+                    const label = ad.status === 'on' ? '노출 중' : '비노출';
+                    pushLog(`[광고] ${ad.slot} (${ad.title}) 상태를 "${label}" 으로 변경`);
+                    renderAdsTable();
+                    if (editingAdSlot === ad.slot && adsStatusSelect) {
+                        adsStatusSelect.value = ad.status;
+                    }
+                } else if (action === 'edit-ad') {
+                    const ad = adsData.find(a => a.slot === id);
+                    if (!ad) return;
+                    editingAdSlot = ad.slot;
+                    if (adsSlotInput) adsSlotInput.value = ad.slot;
+                    if (adsTitleInput) adsTitleInput.value = ad.title || '';
+                    if (adsOwnerInput) adsOwnerInput.value = ad.owner || '';
+                    if (adsPositionSelect) adsPositionSelect.value = ad.position || '홈 메인 상단';
+                    if (adsPeriodInput) adsPeriodInput.value = ad.period || '';
+                    if (adsStatusSelect) adsStatusSelect.value = ad.status || 'on';
+                    if (adsSubmitBtn) adsSubmitBtn.textContent = '수정 완료';
+                    if (adsCancelEditBtn) adsCancelEditBtn.classList.remove('hidden');
+                    pushLog(`[광고] ${ad.slot} (${ad.title}) 편집 모드 진입`);
+                    showSection('ads-section');
+                    activateNav('ads-section');
+                } else if (action === 'delete-ad') {
+                    const index = adsData.findIndex(a => a.slot === id);
+                    if (index === -1) return;
+                    const ad = adsData[index];
+                    const ok = window.confirm(`슬롯 ${ad.slot} (${ad.title}) 배너를 삭제하시겠습니까?`);
+                    if (!ok) return;
+                    adsData.splice(index, 1);
+                    if (editingAdSlot === ad.slot) {
+                        resetAdsForm();
+                    }
+                    pushLog(`[광고] ${ad.slot} (${ad.title}) 삭제`);
+                    renderAdsTable();
+                }
+            });
+
+            // 초기 로그 렌더 (비어있는 상태)
+            renderLog();
+        });
+    </script>
+    <script>
+    (function() {
+        if (window.self === window.top) return;
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginPage = document.getElementById('login-page');
+            var app = document.getElementById('app');
+            if (loginPage) loginPage.classList.add('hidden');
+            if (app) app.classList.remove('hidden');
+            window.addEventListener('message', function(e) {
+                if (e.data && e.data.type === 'ADMIN_AUTH' && e.data.user) {
+                    var nameEl = document.getElementById('current-admin-name');
+                    var roleEl = document.getElementById('current-admin-role');
+                    if (nameEl) nameEl.textContent = e.data.user.nickname || '관리자';
+                    if (roleEl) roleEl.textContent = (e.data.user.role === 'admin' ? '운영자' : '스태프');
+                }
+            });
+            window.parent.postMessage({ type: 'REQUEST_ADMIN_AUTH' }, '*');
+        });
+    })();
+    </script>
+</body>
+
+</html>
