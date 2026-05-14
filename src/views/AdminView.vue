@@ -24,23 +24,7 @@ function getAuth() {
   }
 }
 
-function handleMessage(e) {
-  if (e.data?.type !== 'REQUEST_ADMIN_AUTH' || !iframeRef.value?.contentWindow) return
-  const auth = getAuth()
-  if (!auth) return
-  iframeRef.value.contentWindow.postMessage(
-    {
-      type: 'ADMIN_AUTH',
-      user: {
-        nickname: auth.nickname || '관리자',
-        role: auth.role || 'admin'
-      }
-    },
-    '*'
-  )
-}
-
-function onIframeLoad() {
+function sendAuthToIframe() {
   const iframe = iframeRef.value
   const auth = getAuth()
   if (!iframe?.contentWindow || !auth) return
@@ -48,12 +32,36 @@ function onIframeLoad() {
     {
       type: 'ADMIN_AUTH',
       user: {
+        id: auth.id,
+        uid: auth.uid,
+        email: auth.email,
         nickname: auth.nickname || '관리자',
-        role: auth.role || 'admin'
-      }
+        profileImage: auth.profileImage,
+        role: auth.role || 'ADMIN',
+        entryType: auth.entryType,
+      },
+      accessToken: auth.accessToken,
+      refreshToken: auth.refreshToken,
     },
     '*'
   )
+}
+
+function handleMessage(e) {
+  if (!e.data) return
+
+  if (e.data.type === 'REQUEST_ADMIN_AUTH') {
+    sendAuthToIframe()
+  }
+
+  if (e.data.type === 'ADMIN_LOGOUT') {
+    sessionStorage.removeItem('bidderlive-auth')
+    window.location.href = '/'
+  }
+}
+
+function onIframeLoad() {
+  sendAuthToIframe()
 }
 
 onMounted(() => {

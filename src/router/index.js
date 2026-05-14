@@ -37,7 +37,7 @@ router.beforeEach((to, _from, next) => {
     next({ path: '/' })
     return
   }
-  const routeRole = user?.entryType || user?.routeRole
+  const routeRole = user?.routeRole
   if (to.meta.role && user && routeRole !== to.meta.role) {
     next({ path: routeRole === 'admin' ? '/admin' : '/user' })
     return

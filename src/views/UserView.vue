@@ -24,23 +24,7 @@ function getAuth() {
   }
 }
 
-function handleMessage(e) {
-  if (e.data?.type !== 'REQUEST_USER_AUTH' || !iframeRef.value?.contentWindow) return
-  const auth = getAuth()
-  if (!auth) return
-  iframeRef.value.contentWindow.postMessage(
-    {
-      type: 'USER_AUTH',
-      user: {
-        nickname: auth.nickname || '닉네임',
-        role: auth.role || 'buyer'
-      }
-    },
-    '*'
-  )
-}
-
-function onIframeLoad() {
+function sendAuthToIframe() {
   const iframe = iframeRef.value
   const auth = getAuth()
   if (!iframe?.contentWindow || !auth) return
@@ -48,12 +32,37 @@ function onIframeLoad() {
     {
       type: 'USER_AUTH',
       user: {
+        id: auth.id,
+        uid: auth.uid,
+        email: auth.email,
         nickname: auth.nickname || '닉네임',
-        role: auth.role || 'buyer'
-      }
+        profileImage: auth.profileImage,
+        role: auth.role || 'BUYER',
+        entryType: auth.entryType || 'BUYER',
+        companyName: auth.companyName,
+      },
+      accessToken: auth.accessToken,
+      refreshToken: auth.refreshToken,
     },
     '*'
   )
+}
+
+function handleMessage(e) {
+  if (!e.data) return
+
+  if (e.data.type === 'REQUEST_USER_AUTH') {
+    sendAuthToIframe()
+  }
+
+  if (e.data.type === 'USER_LOGOUT') {
+    sessionStorage.removeItem('bidderlive-auth')
+    window.location.href = '/'
+  }
+}
+
+function onIframeLoad() {
+  sendAuthToIframe()
 }
 
 onMounted(() => {
